@@ -4,8 +4,18 @@ import { View, Text, StyleSheet, TextInput, Switch, Button } from 'react-native'
 
 
 export default function AdvancedSettings() {
-    const [isEnabled, setIsEnabled] = useState(false);
-    const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+    const [isEnabled, setIsEnabled] = useState(true);
+    const [isEnabled2, setIsEnabled2] = useState(true);
+    const [isEnabled3, setIsEnabled3] = useState(true);
+    const [isEnabled4, setIsEnabled4] = useState(true);
+
+
+    const toggleSwitch = () => {setIsEnabled(previousState => !previousState);
+    }
+    const toggleSwitch2 = () => setIsEnabled2(previousState => !previousState);
+    const toggleSwitch3 = () => setIsEnabled3(previousState => !previousState);
+    const toggleSwitch4 = () => setIsEnabled4(previousState => !previousState);
+
     return (
         <View style={styles.container}>
             <Text style={styles.text}>Players Per Team ?</Text>
@@ -28,8 +38,8 @@ export default function AdvancedSettings() {
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
 
                     <Text style={styles.text3}>Re-Ball</Text>
-                    <Switch onValueChange={toggleSwitch}
-                        value={isEnabled} trackColor='green'
+                    <Switch onValueChange={toggleSwitch2}
+                        value={isEnabled2} trackColor='green'
                         thumbColor='green' />
 
                 </View>
@@ -39,7 +49,7 @@ export default function AdvancedSettings() {
 
                     <TextInput
                         style={styles.input2}
-                        placeholder="16"
+                        placeholder="1"
                         keyboardType="numeric"
 
                     />
@@ -52,8 +62,8 @@ export default function AdvancedSettings() {
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', paddingRight: 5 }}>
 
                 <Text style={styles.text2}>Wide Ball</Text>
-                <Switch onValueChange={toggleSwitch}
-                    value={isEnabled} trackColor='green'
+                <Switch onValueChange={toggleSwitch3}
+                    value={isEnabled3} trackColor='green'
                     thumbColor='green'
                 />
 
@@ -62,8 +72,8 @@ export default function AdvancedSettings() {
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' }}>
 
                     <Text style={styles.text3}>Re-Ball</Text>
-                    <Switch onValueChange={toggleSwitch}
-                        value={isEnabled} trackColor='green'
+                    <Switch onValueChange={toggleSwitch4}
+                        value={isEnabled4} trackColor='green'
                         thumbColor='green' />
 
                 </View>
@@ -73,7 +83,7 @@ export default function AdvancedSettings() {
 
                     <TextInput
                         style={styles.input2}
-                        placeholder="16"
+                        placeholder="1"
                         keyboardType="numeric"
 
                     />
