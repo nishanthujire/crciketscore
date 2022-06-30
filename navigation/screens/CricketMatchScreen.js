@@ -7,26 +7,17 @@ import * as SQLite from 'expo-sqlite';
 const db = SQLite.openDatabase('db.cricketDb') // returns Database object
 
 
-
-
-
-
-
-
 export default function HomeScreen({ navigation }) {
   //hooks
   const [hostteam, setHostteam] = useState('Host Team');
   const [visitorteam, setVisitorteam] = useState('Visitor Team');
-  const [tossvalue, setTossvalue] = useState('');
+  const [tossvalue, setTossvalue] = useState();
   const [optedvalue, setOptedvalue] = useState('bat');
   const [overs, setOvers] = useState('');
 
-
-
-
   useEffect(() => {
     createTable();
-   // deleteTable();
+   //deleteTable();
   }, []);
   //teams table creation 
   const createTable = () => {
@@ -47,40 +38,39 @@ export default function HomeScreen({ navigation }) {
   const insert = () => {
     //data validation
     if (!hostteam || !visitorteam || !tossvalue || !optedvalue || !overs) {
-      alert('Please all the details');
+      alert('Please fill all the details.');
       return;
     }
     //inserting data into matches table
     db.transaction(tx => {
       tx.executeSql('INSERT INTO matches (team1,team2,toss,opted,overs) VALUES (?,?,?,?,?)', [hostteam, visitorteam, tossvalue, optedvalue, overs],
         (tx, results) => {
-
           console.log('Results', results.rowsAffected);
           if (results.rowsAffected > 0) {
             console.log('inserted matches');
-            alert('inseted matches');
+            //alert('inserted matches');
           }
         },
         (tx, error) => console.log('Error', error))
     });
 
-
+    
     //inserting data into teams table
-    db.transaction(tx => {
-      tx.executeSql('INSERT INTO teams (name,total_matches,won,lost) values (?,?,?,?)', [hostteam, 1, 1, 1],
+    db.transaction(tx => { 
+      tx.executeSql('INSERT INTO teams (name,total_matches,won,lost) values (?,?,?,?)', [hostteam, 0, 0, 0],
         (tx, results) => {
 
           console.log('Results', results.rowsAffected);
           if (results.rowsAffected > 0) {
             console.log('inserted team 1');
-            alert('inseted teams');
+           alert('inserted teams');
           }
         },
         (tx, error) => console.log('Error', error))
     });
     //inserting data into teams table
     db.transaction(tx => {
-      tx.executeSql('INSERT INTO teams (name,total_matches,won,lost) values (?,?,?,?)', [visitorteam, 1, 1, 1],
+      tx.executeSql('INSERT INTO teams (name,total_matches,won,lost) values (?,?,?,?)', [visitorteam, 0, 0, 0],
         (tx, results) => {
 
           console.log('Results', results.rowsAffected);
@@ -96,7 +86,7 @@ export default function HomeScreen({ navigation }) {
   const deleteTable = () => {
     db.transaction(tx => {
       tx.executeSql(
-        'delete from matches'
+        'delete from teams'
       )
     })
   }
