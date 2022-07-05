@@ -7,6 +7,7 @@ import Dialog from "react-native-dialog";
 import { useState, useEffect } from "react";
 import { useNavigation } from '@react-navigation/native';
 import * as SQLite from 'expo-sqlite';
+
 //db creaion
 const db = SQLite.openDatabase('db.cricketDb') // returns Database object
 
@@ -55,7 +56,7 @@ export default function TeamsScreen() {
     );
 
   let listItemView = (item) => {
-     
+    //function to show the user flatlist item views
     const selectStudent = (item) => {
       const value = "Selected Student : "+ item.name;
      alert(value);
@@ -66,9 +67,8 @@ export default function TeamsScreen() {
      
         <Image source={require('../screens/image/profile.jpg')} style={{ width: 50, height: 50, borderRadius: 30 }} />
         <TouchableOpacity style={{ marginLeft: 15, marginTop: 5, flex: 1 }}
-          onPress={() => //navigation.navigate('Team_Details') 
-          selectStudent(item)} >
-          <Text style={{ fontWeight: "bold" }}>{item.name}</Text>
+          onPress={() => navigation.navigate('Team_Details') } >
+          <Text style={{ fontWeight: "bold" }}>{item.team_name}</Text>
           <View style={styles.row}>
 
             <Text style={{ marginTop: 5 }}>Matches: </Text>
@@ -82,19 +82,19 @@ export default function TeamsScreen() {
        
 
         <View style={styles.icon}>
-          <TouchableOpacity onPress={showDialog}>
-            <Ionicons style={styles.icn} name="pencil-sharp" size={23} color="black"></Ionicons>
-          </TouchableOpacity>
-          <Dialog.Container visible={visible}>
-            <Dialog.Title style={{ fontWeight: 'bold' }}>Update team</Dialog.Title>
-            <Dialog.Input label=" " value={item.name}></Dialog.Input>
-            <Dialog.Button label="Cancel" onPress={handleCancel} />
-            <Dialog.Button label="Ok" onPress={handleDelete} />
-          </Dialog.Container>
-          <TouchableOpacity style={{ fontWeight: 'bold' }}
-            onPress={() => DeleteTeam()}>
-            <Ionicons name='trash-sharp' size={23} color="black" />
-          </TouchableOpacity>
+        <TouchableOpacity onPress={showDialog}>
+                    <Ionicons style={styles.icn} name="pencil-sharp" size={23} color="black"></Ionicons>
+            </TouchableOpacity>
+            <Dialog.Container visible={visible}>
+                <Dialog.Title style={{fontWeight:'bold'}}>Update Team ?</Dialog.Title>
+                <Dialog.Input label=" ">A_Player</Dialog.Input>
+                <Dialog.Button label="Cancel" onPress={handleCancel} />
+                <Dialog.Button label="Ok" onPress={handleDelete} />
+            </Dialog.Container>
+            <TouchableOpacity 
+                onPress={()=>DeleteTeam()}>               
+                <Ionicons name='trash-sharp' size={23} color="black" />
+            </TouchableOpacity>
         </View>
       </View>
     );
@@ -107,7 +107,7 @@ export default function TeamsScreen() {
           <FlatList
             data={flatListItems}
             //ItemSeparatorComponent={listViewItemSeparator}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item) => item.team_id}
             renderItem={({ item }) => listItemView(item)}
           />
         </View>
@@ -124,13 +124,13 @@ const styles = StyleSheet.create({
 
   listItem: {
     margin: 10,
-    padding: 10,
+    padding: 2,
     backgroundColor: "#FFF",
     width: "95%",
     flex: 1,
     alignSelf: "center",
     flexDirection: "row",
-    borderRadius: 5,
+    borderRadius: 10,
     elevation: 10,
     shadowColor: '#171717',
   },
@@ -138,7 +138,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     alignItems: 'flex-start',
-    marginTop: 5,
     flex: 3,
   },
   icon: {

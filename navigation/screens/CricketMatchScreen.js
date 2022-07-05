@@ -17,19 +17,19 @@ export default function HomeScreen({ navigation }) {
 
   useEffect(() => {
     createTable();
-   //deleteTable();
+    //deleteTable();
   }, []);
   //teams table creation 
   const createTable = () => {
 
     db.transaction(tx => {
       tx.executeSql(
-        'CREATE TABLE IF NOT EXISTS matches (id INTEGER PRIMARY KEY AUTOINCREMENT,team1 TEXT,team2 TEXT,toss TEXT,opted TEXT,overs INTEGER)'
+        'CREATE TABLE IF NOT EXISTS matches (match_id INTEGER PRIMARY KEY AUTOINCREMENT,team1 TEXT,team2 TEXT,toss TEXT,opted TEXT,overs INTEGER,win_team TEXt,lost_team TEXT)'
       )
     })
     db.transaction(tx => {
       tx.executeSql(
-        'CREATE TABLE IF NOT EXISTS teams (id INTEGER PRIMARY KEY AUTOINCREMENT,name TEXT,total_matches INTEGER,won INTEGER,lost INTEGER)'
+        'CREATE TABLE IF NOT EXISTS teams (team_id INTEGER PRIMARY KEY AUTOINCREMENT,team_name TEXT,total_matches INTEGER,won INTEGER,lost INTEGER)'
       )
     })
 
@@ -54,29 +54,34 @@ export default function HomeScreen({ navigation }) {
         (tx, error) => console.log('Error', error))
     });
 
-    
+
     //inserting data into teams table
-    db.transaction(tx => { 
-      tx.executeSql('INSERT INTO teams (name,total_matches,won,lost) values (?,?,?,?)', [hostteam, 0, 0, 0],
+    db.transaction(tx => {
+      tx.executeSql('INSERT INTO teams (team_name,total_matches,won,lost) values (?,?,?,?)', [hostteam, 0, 0, 0],
         (tx, results) => {
 
           console.log('Results', results.rowsAffected);
           if (results.rowsAffected > 0) {
             console.log('inserted team 1');
-           alert('inserted teams');
+            //alert('inserted teams');
           }
         },
         (tx, error) => console.log('Error', error))
     });
     //inserting data into teams table
     db.transaction(tx => {
-      tx.executeSql('INSERT INTO teams (name,total_matches,won,lost) values (?,?,?,?)', [visitorteam, 0, 0, 0],
+      tx.executeSql('INSERT INTO teams (team_name,total_matches,won,lost) values (?,?,?,?)', [visitorteam, 0, 0, 0],
         (tx, results) => {
 
           console.log('Results', results.rowsAffected);
           if (results.rowsAffected > 0) {
+
             console.log('inserted team 2');
-            //alert('inseted teams');
+            //sending data
+            navigation.navigate('StartMatchScreen', {
+              toss: tossvalue,
+            });
+
           }
         },
         (tx, error) => console.log('Error', error))
@@ -152,6 +157,7 @@ export default function HomeScreen({ navigation }) {
           title="Start match"
 
           onPress={insert}
+
 
         />
 
