@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TextInput, Button, Alert } from 'react-native';
 import HomeScreen from './CricketMatchScreen';
 import * as SQLite from 'expo-sqlite';
 //db creaion
-const db = SQLite.openDatabase('db.cricketDb') // returns Database object
+const db = SQLite.openDatabase('db.cricketscoreDb') // returns Database object
 
 
 
@@ -17,10 +17,13 @@ export default function StartMatchScreen({ route }) {
 
     const toss = route.params.toss;
     console.log(toss);
+    // const toss_id = route.params.toss_id;
+    // console.log("id 2 is ",toss_id);
+    
 
 
     useEffect(() => {
-        createTable2();
+       createTable2();
         //deleteTable();
     }, []);
 
@@ -46,18 +49,7 @@ export default function StartMatchScreen({ route }) {
         }
         //inserting data into matches table
         db.transaction(tx => {
-            tx.executeSql(
-                'SELECT * FROM teams where team_name = ?',
-                ['Diy'],
-                (tx, results) => {
-                    
-                    var len = results.rows.length;
-                    if (len > 0) {
-                        console.log("gg",results.rows.item(0).team_name);
-                    }
-                    
-                }
-            );
+          
             tx.executeSql('INSERT INTO players (player_name,team_id) VALUES (?,?)', [striker, 1],
                 (tx, results) => {
                     console.log('Results', results.rowsAffected);

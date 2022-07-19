@@ -9,7 +9,7 @@ import { useNavigation } from '@react-navigation/native';
 import * as SQLite from 'expo-sqlite';
 
 //db creaion
-const db = SQLite.openDatabase('db.cricketDb') // returns Database object
+const db = SQLite.openDatabase('db.cricketscoreDb') // returns Database object
 
 
 export default function TeamsScreen() {

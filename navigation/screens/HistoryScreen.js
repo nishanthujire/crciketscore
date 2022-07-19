@@ -8,7 +8,7 @@ import {useState,useEffect} from "react";
 import { useNavigation } from '@react-navigation/native';
 import * as SQLite from 'expo-sqlite';
 //db creaion
-const db = SQLite.openDatabase('db.cricketDb') // returns Database object
+const db = SQLite.openDatabase('db.cricketscoreDb') // returns Database object
 
 
 const ViewAllUser = () => {
@@ -17,7 +17,7 @@ const ViewAllUser = () => {
   useEffect(() => {
     db.transaction((tx) => {
       tx.executeSql(
-        'SELECT * FROM matches',
+        'SELECT * FROM players',
         [],
         (tx, results) => {
           var temp = [];
@@ -46,11 +46,11 @@ const ViewAllUser = () => {
       <View
         key={item.id}
         style={{ backgroundColor: 'white', padding: 20 }}>
-        <Text>Team1: {item.team1}</Text>
-        <Text>Team2: {item.team2}</Text>
-        <Text>Toss: {item.toss}</Text>
-        <Text>opted: {item.opted}</Text>
-        <Text>overs: {item.overs}</Text>
+        <Text>Team1: {item.player_id}</Text>
+        <Text>Team2: {item.player_name}</Text>
+        <Text>Toss: {item.team_id}</Text>
+        {/* <Text>opted: {item.opted}</Text>
+        <Text>overs: {item.overs}</Text> */}
       </View>
     );
   };
