@@ -15,19 +15,22 @@ export default function StartMatchScreen({ route }) {
     const [nonstriker, setNonstriker] = useState('');
     const [bowler, setBowler] = useState('');
 
-    const toss = route.params.toss;
-    console.log(toss);
-    // const toss_id = route.params.toss_id;
-    // console.log("id 2 is ",toss_id);
-    
+    //getting batting & bowling teams data
+    const batting = route.params.batting;
+    console.log("batting : ", batting);
+    const bowling = route.params.bowling;
+    console.log("bowling :", bowling);
+    var batting_team_id,bowling_team_id;
+   
+
 
 
     useEffect(() => {
-       createTable2();
+        createTable2();
         //deleteTable();
     }, []);
 
-    //creating palyers table
+    //creating players table
     const createTable2 = () => {
 
         db.transaction(tx => {
@@ -47,15 +50,90 @@ export default function StartMatchScreen({ route }) {
             alert('Please fill players details.');
             return;
         }
-        //inserting data into matches table
+        //checking two openers are same
+        if(striker === nonstriker){
+            alert('Openers cannot be the same.');
+            return;
+        }
+
+        //fething batting teams team_id
+
+        db.transaction((tx) => {
+            tx.executeSql(
+                "SELECT team_id FROM teams where team_name = ?",
+                [batting],
+                (tx, results) => {
+                    var len = results.rows.length;
+                    console.log('len is ', len);
+
+                    if (len > 0) {
+                        var teams_id = results.rows.item(0).team_id;
+                        batting_team_id = teams_id;
+                        
+                        console.log("batting id is", batting_team_id);
+                        
+                       
+
+                    }
+                }
+            )
+        })
+        //fething bowling teams team_id
+        db.transaction((tx) => {
+            tx.executeSql(
+                "SELECT team_id FROM teams where team_name = ?",
+                [bowling],
+                (tx, results) => {
+                    var len = results.rows.length;
+                    console.log('len is ', len);
+
+                    if (len > 0) {
+                        var teams_id2 = results.rows.item(0).team_id;
+                        bowling_team_id = teams_id2;
+                        
+                        console.log("bowling id is", bowling_team_id);
+                        
+                        
+
+                    }
+                }
+            )
+        })
+        //inserting striker data into players table
         db.transaction(tx => {
-          
-            tx.executeSql('INSERT INTO players (player_name,team_id) VALUES (?,?)', [striker, 1],
+
+            tx.executeSql('INSERT INTO players (player_name,team_id) VALUES (?,?)', [striker, batting_team_id],
                 (tx, results) => {
                     console.log('Results', results.rowsAffected);
                     if (results.rowsAffected > 0) {
-                        console.log('inserted players');
-                        //alert('inserted matches');
+                        console.log('inserted striker');
+                       
+                    }
+                },
+                (tx, error) => console.log('Error', error))
+        });
+        //inserting non-stiker data into players table
+        db.transaction(tx => {
+
+            tx.executeSql('INSERT INTO players (player_name,team_id) VALUES (?,?)', [nonstriker, batting_team_id],
+                (tx, results) => {
+                    console.log('Results', results.rowsAffected);
+                    if (results.rowsAffected > 0) {
+                        console.log('inserted non-striker');
+                        
+                    }
+                },
+                (tx, error) => console.log('Error', error))
+        });
+        //inserting bowler data into players table
+        db.transaction(tx => {
+
+            tx.executeSql('INSERT INTO players (player_name,team_id) VALUES (?,?)', [bowler, bowling_team_id],
+                (tx, results) => {
+                    console.log('Results', results.rowsAffected);
+                    if (results.rowsAffected > 0) {
+                        console.log('inserted bowler');
+                        
                     }
                 },
                 (tx, error) => console.log('Error', error))

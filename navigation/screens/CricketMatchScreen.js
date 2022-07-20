@@ -12,10 +12,11 @@ export default function HomeScreen({ navigation }) {
   const [hostteam, setHostteam] = useState('Host Team');
   const [visitorteam, setVisitorteam] = useState('Visitor Team');
   const [tossvalue, setTossvalue] = useState();
-  const [tosslostValue, setTosslostValue] = useState();
   const [optedvalue, setOptedvalue] = useState('bat');
   const [overs, setOvers] = useState('');
-  const [teams_id, setTossTeams_id] = useState();
+  var battingteam,bowlingteam;
+  
+  
 
 
 
@@ -23,7 +24,7 @@ export default function HomeScreen({ navigation }) {
 
   useEffect(() => {
     createTable();
-    //deleteTable();
+   //deleteTable();
   }, []);
   //teams and matches table creation 
   const createTable = () => {
@@ -51,6 +52,11 @@ export default function HomeScreen({ navigation }) {
       alert('Please fill all the details.');
       return;
     }
+    //checking two teams  are same
+    if(hostteam === visitorteam){
+      alert('Both the teams cannot be the same.');
+      return;
+  }
     //inserting data into matches table
 
     db.transaction(tx => {
@@ -112,7 +118,7 @@ export default function HomeScreen({ navigation }) {
 
           }
           else {
-            //inserting host data into teams table
+            //inserting visitor data into teams table
             db.transaction(tx => {
               tx.executeSql('INSERT INTO teams (team_name,total_matches,won,lost) values (?,?,?,?)', [visitorteam, 0, 0, 0],
                 (tx, results) => {
@@ -129,36 +135,31 @@ export default function HomeScreen({ navigation }) {
         }
       )
     })
+    //sending batting and bowling team data to start match screen
+    if(tossvalue === hostteam && optedvalue === "bat"){
+      battingteam = hostteam;
+      bowlingteam = visitorteam;
+
+    }
+    else if(tossvalue === hostteam && optedvalue === "bowl"){
+      bowlingteam = hostteam;
+      battingteam = visitorteam;
+    }
+    else if(tossvalue === visitorteam && optedvalue === "bat"){
+      battingteam = visitorteam;
+      bowlingteam = hostteam;
+
+    }
+    else if(tossvalue === visitorteam && optedvalue === "bowl"){
+      bowlingteam = visitorteam;
+      battingteam = hostteam;
+    }
+
+    //navigating to startmatch screen
     navigation.navigate('StartMatchScreen', {
-      toss: tossvalue
+      batting: battingteam,bowling:bowlingteam
     });
 
-    // //fething team id
-
-    // db.transaction((tx) => {
-    //   tx.executeSql(
-    //     "SELECT team_id FROM teams where team_name = ?",
-    //     [hostteam],
-    //     (tx, results) => {
-    //       var len = results.rows.length;
-    //       console.log('len is ', len)
-
-    //       if (len > 0) {
-    //         var toss_id = results.rows.item(0).team_id;
-    //         console.log("id is", toss_id)
-
-    //         //sending data
-    //         navigation.navigate('StartMatchScreen', {
-    //           toss: tossvalue, toss_id: results.rows.item(0).team_id
-    //         });
-
-
-
-
-    //       }
-    //     }
-    //   )
-    // })
 
    
 
@@ -167,7 +168,7 @@ export default function HomeScreen({ navigation }) {
   const deleteTable = () => {
     db.transaction(tx => {
       tx.executeSql(
-        'delete from matches'
+        'delete from teams'
       )
     })
   }

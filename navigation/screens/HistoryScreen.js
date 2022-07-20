@@ -46,9 +46,9 @@ const ViewAllUser = () => {
       <View
         key={item.id}
         style={{ backgroundColor: 'white', padding: 20 }}>
-        <Text>Team1: {item.player_id}</Text>
-        <Text>Team2: {item.player_name}</Text>
-        <Text>Toss: {item.team_id}</Text>
+        <Text>player_id: {item.player_id}</Text>
+        <Text>player name: {item.player_name}</Text>
+        <Text>team id: {item.team_id}</Text>
         {/* <Text>opted: {item.opted}</Text>
         <Text>overs: {item.overs}</Text> */}
       </View>

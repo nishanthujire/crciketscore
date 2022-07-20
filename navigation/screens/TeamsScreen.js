@@ -47,6 +47,7 @@ export default function TeamsScreen() {
   };
   const navigation = useNavigation();
 
+  //funtion to delete team
   const DeleteTeam = () =>
     Alert.alert("Delete team ?", "Are you sure you want to delete this team?   All the associated matches and players stats of this team will not be deleted.",
       [
@@ -54,47 +55,55 @@ export default function TeamsScreen() {
         { text: "Yes", onPress: () => console.log("OK Pressed") }
       ]
     );
+  
+  //function to navigate to team_details
+  const navigatePlayerDetails = (item) => {
+    var team_id = item.team_id;
+    //navigating to Team_Details screen
+    navigation.navigate('Team_Details', {
+      teamid: team_id
+    });
+    
+  };
 
   let listItemView = (item) => {
     //function to show the user flatlist item views
-    const selectStudent = (item) => {
-      const value = "Selected Student : "+ item.name;
-     alert(value);
-   };
+
+    //onPress={() => navigation.navigate('Team_Details') }
 
     return (
       <View style={[styles.listItem]}>
-     
+
         <Image source={require('../screens/image/profile.jpg')} style={{ width: 50, height: 50, borderRadius: 30 }} />
         <TouchableOpacity style={{ marginLeft: 15, marginTop: 5, flex: 1 }}
-          onPress={() => navigation.navigate('Team_Details') } >
+          onPress={() => navigatePlayerDetails(item)} >
           <Text style={{ fontWeight: "bold" }}>{item.team_name}</Text>
           <View style={styles.row}>
 
             <Text style={{ marginTop: 5 }}>Matches: </Text>
-            <Text style={{ marginTop: 6 }}>{item.total_matches}</Text>
+            <Text style={{ marginTop: 6 }}>{item.team_id}</Text>
             <Text style={{ marginTop: 5, marginLeft: 15, }}>won : </Text>
             <Text style={{ marginTop: 6 }}>{item.won}</Text>
             <Text style={{ marginTop: 5, marginLeft: 15, }}>Lost : </Text>
             <Text style={{ marginTop: 6 }}>{item.lost}</Text>
           </View>
         </TouchableOpacity>
-       
+
 
         <View style={styles.icon}>
-        <TouchableOpacity onPress={showDialog}>
-                    <Ionicons style={styles.icn} name="pencil-sharp" size={23} color="black"></Ionicons>
-            </TouchableOpacity>
-            <Dialog.Container visible={visible}>
-                <Dialog.Title style={{fontWeight:'bold'}}>Update Team ?</Dialog.Title>
-                <Dialog.Input label=" ">A_Player</Dialog.Input>
-                <Dialog.Button label="Cancel" onPress={handleCancel} />
-                <Dialog.Button label="Ok" onPress={handleDelete} />
-            </Dialog.Container>
-            <TouchableOpacity 
-                onPress={()=>DeleteTeam()}>               
-                <Ionicons name='trash-sharp' size={23} color="black" />
-            </TouchableOpacity>
+          <TouchableOpacity onPress={showDialog}>
+            <Ionicons style={styles.icn} name="pencil-sharp" size={23} color="black"></Ionicons>
+          </TouchableOpacity>
+          <Dialog.Container visible={visible}>
+            <Dialog.Title style={{ fontWeight: 'bold' }}>Update Team ?</Dialog.Title>
+            <Dialog.Input label=" ">A_Player</Dialog.Input>
+            <Dialog.Button label="Cancel" onPress={handleCancel} />
+            <Dialog.Button label="Ok" onPress={handleDelete} />
+          </Dialog.Container>
+          <TouchableOpacity
+            onPress={() => DeleteTeam()}>
+            <Ionicons name='trash-sharp' size={23} color="black" />
+          </TouchableOpacity>
         </View>
       </View>
     );
