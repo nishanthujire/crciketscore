@@ -7,7 +7,7 @@ const db = SQLite.openDatabase('db.cricketscoreDb') // returns Database object
 
 
 
-export default function StartMatchScreen({ route }) {
+export default function StartMatchScreen({ route, navigation }) {
     //getting toss wining team data from cricketMatchScreen
     //const { toss } = route.toss;
     //hooks
@@ -20,8 +20,8 @@ export default function StartMatchScreen({ route }) {
     console.log("batting : ", batting);
     const bowling = route.params.bowling;
     console.log("bowling :", bowling);
-    var batting_team_id,bowling_team_id;
-   
+    var batting_team_id, bowling_team_id;
+
 
 
 
@@ -51,7 +51,7 @@ export default function StartMatchScreen({ route }) {
             return;
         }
         //checking two openers are same
-        if(striker === nonstriker){
+        if (striker === nonstriker) {
             alert('Openers cannot be the same.');
             return;
         }
@@ -69,10 +69,10 @@ export default function StartMatchScreen({ route }) {
                     if (len > 0) {
                         var teams_id = results.rows.item(0).team_id;
                         batting_team_id = teams_id;
-                        
+
                         console.log("batting id is", batting_team_id);
-                        
-                       
+
+
 
                     }
                 }
@@ -90,10 +90,10 @@ export default function StartMatchScreen({ route }) {
                     if (len > 0) {
                         var teams_id2 = results.rows.item(0).team_id;
                         bowling_team_id = teams_id2;
-                        
+
                         console.log("bowling id is", bowling_team_id);
-                        
-                        
+
+
 
                     }
                 }
@@ -107,7 +107,7 @@ export default function StartMatchScreen({ route }) {
                     console.log('Results', results.rowsAffected);
                     if (results.rowsAffected > 0) {
                         console.log('inserted striker');
-                       
+
                     }
                 },
                 (tx, error) => console.log('Error', error))
@@ -120,7 +120,7 @@ export default function StartMatchScreen({ route }) {
                     console.log('Results', results.rowsAffected);
                     if (results.rowsAffected > 0) {
                         console.log('inserted non-striker');
-                        
+
                     }
                 },
                 (tx, error) => console.log('Error', error))
@@ -133,11 +133,15 @@ export default function StartMatchScreen({ route }) {
                     console.log('Results', results.rowsAffected);
                     if (results.rowsAffected > 0) {
                         console.log('inserted bowler');
-                        
+
                     }
                 },
                 (tx, error) => console.log('Error', error))
         });
+
+       //navigating to startmatch screen
+    navigation.navigate('FirstInningsScreen' );
+
     }
     return (
         <View style={styles.container}>

@@ -11,7 +11,7 @@ export default function HomeScreen({ navigation }) {
   //hooks
   const [hostteam, setHostteam] = useState('Host Team');
   const [visitorteam, setVisitorteam] = useState('Visitor Team');
-  const [tossvalue, setTossvalue] = useState();
+  const [tossvalue, setTossvalue] = useState('');
   const [optedvalue, setOptedvalue] = useState('bat');
   const [overs, setOvers] = useState('');
   var battingteam,bowlingteam;
@@ -154,7 +154,7 @@ export default function HomeScreen({ navigation }) {
       bowlingteam = visitorteam;
       battingteam = hostteam;
     }
-
+    
     //navigating to startmatch screen
     navigation.navigate('StartMatchScreen', {
       batting: battingteam,bowling:bowlingteam
@@ -168,7 +168,7 @@ export default function HomeScreen({ navigation }) {
   const deleteTable = () => {
     db.transaction(tx => {
       tx.executeSql(
-        'delete from teams'
+        'delete from players'
       )
     })
   }

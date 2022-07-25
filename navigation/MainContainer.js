@@ -13,6 +13,9 @@ import AdvancedSettings from './screens/AdvancedSettings';
 import StartMatchScreen from './screens/StartMatchScreen';
 import ScoreBoardScreen from './ScoreBoardContainer';
 import PlayerDetails from './screens/PlayerDetails';
+import FirstInningsScreen from './screens/FirstInningsScreen';
+import UpdateTeam from './screens/UpdateTeam';
+import UpdatePlayer from './screens/UpdatePlayer';
 
 //Screen names
 const homeName = "New Match";
@@ -83,6 +86,11 @@ function App() {
 
         <Stack.Screen options={{title:'Team Details', headerStyle: {backgroundColor: 'green',},headerTintColor: '#fff',}} name="Team_Details" component={Team_Details} />
         <Stack.Screen options={{title:'Player Profile', headerStyle: {backgroundColor: 'green', },headerTintColor: '#fff',}}name="PlayerDetails" component={PlayerDetails}/>
+        <Stack.Screen options={{title:'First Innings ', headerStyle: {backgroundColor: 'green', },headerTintColor: '#fff',}}name="FirstInningsScreen" component={FirstInningsScreen}/>
+        <Stack.Screen options={{title:'UpdateTeam  ', headerStyle: {backgroundColor: 'green', },headerTintColor: '#fff',}}name="UpdateTeam" component={UpdateTeam}/>
+        <Stack.Screen options={{title:'UpdatePlayer ', headerStyle: {backgroundColor: 'green', },headerTintColor: '#fff',}}name="UpdatePlayer" component={UpdatePlayer}/>
+
+
 
 
       </Stack.Navigator>

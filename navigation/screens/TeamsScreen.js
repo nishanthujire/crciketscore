@@ -3,7 +3,7 @@ import { StatusBar } from "expo-status-bar";
 import { View, Text, Image, Button, Modal, Dimensions, width, SafeAreaView } from 'react-native';
 import { StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Dialog from "react-native-dialog";
+
 import { useState, useEffect } from "react";
 import { useNavigation } from '@react-navigation/native';
 import * as SQLite from 'expo-sqlite';
@@ -16,35 +16,33 @@ export default function TeamsScreen() {
   let [flatListItems, setFlatListItems] = useState([]);
 
   useEffect(() => {
-    db.transaction((tx) => {
-      tx.executeSql(
-        'SELECT * FROM teams',
-        [],
-        (tx, results) => {
-          var temp = [];
-          for (let i = 0; i < results.rows.length; ++i)
-            temp.push(results.rows.item(i));
-          setFlatListItems(temp);
-        }
-      );
-    });
-  });
-  const [visible, setVisible] = useState(false);
-  //const [items, setItems] = useState([]);
+    let isMounted = true;
 
-  const showDialog = () => {
-    setVisible(true);
-  };
+      if (isMounted) {
+        db.transaction((tx) => {
+          tx.executeSql(
+            'SELECT * FROM teams',
+            [],
+            (tx, results) => {
+              var temp = [];
+              for (let i = 0; i < results.rows.length; ++i)
+                temp.push(results.rows.item(i));
+              setFlatListItems(temp);
+            }
+          );
+        });
 
-  const handleCancel = () => {
-    setVisible(false);
-  };
+      }
 
-  const handleDelete = () => {
-    // The user has pressed the "Delete" button, so here you can do your own logic.
-    // ...Your logic
-    setVisible(false);
-  };
+    return () => {
+      isMounted = false;
+    };
+
+  },[flatListItems]);
+  
+
+  
+   
   const navigation = useNavigation();
 
   //funtion to delete team
@@ -55,7 +53,7 @@ export default function TeamsScreen() {
         { text: "Yes", onPress: () => console.log("OK Pressed") }
       ]
     );
-  
+
   //function to navigate to team_details
   const navigatePlayerDetails = (item) => {
     var team_id = item.team_id;
@@ -63,7 +61,7 @@ export default function TeamsScreen() {
     navigation.navigate('Team_Details', {
       teamid: team_id
     });
-    
+
   };
 
   let listItemView = (item) => {
@@ -91,15 +89,10 @@ export default function TeamsScreen() {
 
 
         <View style={styles.icon}>
-          <TouchableOpacity onPress={showDialog}>
+          <TouchableOpacity onPress={() => navigation.navigate('UpdateTeam') }  >
             <Ionicons style={styles.icn} name="pencil-sharp" size={23} color="black"></Ionicons>
           </TouchableOpacity>
-          <Dialog.Container visible={visible}>
-            <Dialog.Title style={{ fontWeight: 'bold' }}>Update Team ?</Dialog.Title>
-            <Dialog.Input label=" ">A_Player</Dialog.Input>
-            <Dialog.Button label="Cancel" onPress={handleCancel} />
-            <Dialog.Button label="Ok" onPress={handleDelete} />
-          </Dialog.Container>
+          
           <TouchableOpacity
             onPress={() => DeleteTeam()}>
             <Ionicons name='trash-sharp' size={23} color="black" />
@@ -132,14 +125,14 @@ const styles = StyleSheet.create({
   },
 
   listItem: {
-    margin: 10,
+    margin: 5,
     padding: 2,
     backgroundColor: "#FFF",
     width: "95%",
     flex: 1,
     alignSelf: "center",
     flexDirection: "row",
-    borderRadius: 10,
+    borderRadius: 13,
     elevation: 10,
     shadowColor: '#171717',
   },
@@ -161,27 +154,8 @@ const styles = StyleSheet.create({
   },
   icn: {
     marginRight: 10,
-  },
-  viewWrapper: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.2)",
-  },
-  modalView: {
-    alignItems: "center",
-    justifyContent: "center",
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    elevation: 5,
-    transform: [{ translateX: -(width * 0.4) },
-    { translateY: -90 }],
-    height: 180,
-    width: width * 0.8,
-    backgroundColor: "#fff",
-    borderRadius: 7,
-  },
+  }
+  
 });
 
 
