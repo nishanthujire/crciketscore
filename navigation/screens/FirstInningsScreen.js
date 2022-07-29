@@ -42,19 +42,6 @@ export default function FirstInningsScreen({ navigation }) {
     const [bowlermaiden,setBowlermaiden] = useState('');
     const [bowlerruns,setBowlerruns] = useState('');
     const [bowlerwickets,setBowlerwickets] = useState('');
-    
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     return (
