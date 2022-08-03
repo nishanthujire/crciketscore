@@ -1,495 +1,1433 @@
-import  React,{ useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Alert, TouchableOpacity } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, Alert, TouchableOpacity, SwipeableListView } from 'react-native';
 import { Col, Row, Grid } from 'react-native-easy-grid';
 import { Button, Checkbox } from 'react-native-paper';
+import * as SQLite from 'expo-sqlite';
+import Dialog from "react-native-dialog";
+//db creaion
+const db = SQLite.openDatabase('db.cricketscoreDb') // returns Database object
+
+
 
 export default function FirstInningsScreen({ navigation }) {
-    const [checked, setChecked] = React.useState(false);
-    const [widechecked, setWideChecked] = React.useState(false);
-    const [noballchecked, setNoballChecked] = React.useState(false);
-    const [byeschecked, setByesChecked] = React.useState(false);
-    const [legbyeschecked, setLegbyesChecked] = React.useState(false);
-    const [wicketchecked, setWicketChecked] = React.useState(false);
+  const [checked, setChecked] = React.useState(false);
+  const [widechecked, setWideChecked] = React.useState(false);
+  const [noballchecked, setNoballChecked] = React.useState(false);
+  const [byeschecked, setByesChecked] = React.useState(false);
+  const [legbyeschecked, setLegbyesChecked] = React.useState(false);
+  const [wicketchecked, setWicketChecked] = React.useState(false);
 
-    //score hooks
-    const [teamname,setTeamName] = useState('');
-    const [teamrun,setTeamrun] = useState('');
-    const [teamwickets,setTeamwickets] = useState('');
-    const [teamovers,setTeamovers] = useState('');
-    const [teamrunrate,setTeamrunrate] = useState('');
+  //score hooks
+  const [teamname, setTeamName] = useState('India');
+  const [teamrun, setTeamrun] = useState(0);
+  const [teamwickets, setTeamwickets] = useState(0);
+  const [teamovers, setTeamovers] = useState(0);
+  const [teamballs, setTeamballs] = useState(0);
 
-    //striker batsman hooks
-    const [strikername,setStrikername] = useState('');
-    const [strikerrun,setStrikerrun] = useState('');
-    const [strikerballfaced,setStrikerballfaced] = useState('');
-    const [strikerfourcount,setStrikefourcount] = useState('');
-    const [strikersixcount,setStrikesixcount] = useState('');
-    const [strikersrate,setStrikesrate] = useState('');
+  const [teamrunrate, setTeamrunrate] = useState(0);
 
-
-    //non-striker batsman hooks
-    const [nonstrikername,setNonstrikername] = useState('');
-    const [nonstrikerrun,setNonstrikerrun] = useState('');
-    const [nonstrikerballfaced,setNonstrikerballfaced] = useState('');
-    const [nonstrikerfourcount,setNonstrikefourcount] = useState('');
-    const [nonstrikersixcount,setNonstrikesixcount] = useState('');
-    const [nonstrikersrate,setnonstrikesrate] = useState('');
+  //striker batsman hooks
+  const [strikername, setStrikername] = useState('Virat');
+  const [strikerrun, setStrikerrun] = useState(0);
+  const [strikerballfaced, setStrikerballfaced] = useState(0);
+  const [strikerfourcount, setStrikefourcount] = useState(0);
+  const [strikersixcount, setStrikesixcount] = useState(0);
+  const [strikersrate, setStrikesrate] = useState(0);
 
 
-    //bowler hooks
-    const [bowlername,setBowlername] = useState('');
-    const [bowlerover,setBowlerover] = useState('');
-    const [bowlermaiden,setBowlermaiden] = useState('');
-    const [bowlerruns,setBowlerruns] = useState('');
-    const [bowlerwickets,setBowlerwickets] = useState('');
+  //non-striker batsman hooks
+  const [nonstrikername, setNonstrikername] = useState('Rohit');
+  const [nonstrikerrun, setNonstrikerrun] = useState(0);
+  const [nonstrikerballfaced, setNonstrikerballfaced] = useState(0);
+  const [nonstrikerfourcount, setNonstrikefourcount] = useState(0);
+  const [nonstrikersixcount, setNonstrikesixcount] = useState(0);
+  const [nonstrikersrate, setnonstrikesrate] = useState(0);
 
 
-    return (
-        
-        <View style={styles.container} >
-            <ScrollView>
-            <View style={styles.contentBody}>
-                <View style={styles.cardhead}>
-                    <Text style={{ marginBottom: 5 }}>India , 1st innings</Text>
-                    <Text style={{ marginTop: 5, marginRight: 50 }}>CRR</Text>
-                </View>
-                <View style={styles.card}>
-                    <Text style={styles.text}>12 - 0</Text>
-                    <Text style={styles.overs}> (1.0) </Text>
-                    <Text style={styles.crr}> (1.0) </Text>
-                </View>
+  //bowler hooks
+  const [bowlername, setBowlername] = useState('Bumrah');
+  const [bowlerover, setBowlerover] = useState(0);
+  const [bowlerballs, setBowleballs] = useState(0);
 
-            </View>
-            <View style={styles.battingBody}>
-                <Grid >
+  const [bowlermaiden, setBowlermaiden] = useState(0);
+  const [bowlerruns, setBowlerruns] = useState(0);
+  const [bowlerwickets, setBowlerwickets] = useState(0);
+  const [bowlerer, setBowlerer] = useState(0);
 
-                    <Row style={{ height: 40, borderBottomWidth: 1, borderBottomColor: '#000' }}>
-                        <Col size={60}>
-                            <Text style={{ marginBottom: 10, marginRight: 0 }}>Batting </Text>
-                        </Col>
-                        <Col size={15} >
-                            <Text style={{ marginBottom: 10 }}>R </Text>
-                        </Col>
-                        <Col size={15}>
-                            <Text style={{ marginBottom: 10 }}>B </Text>
-                        </Col>
-                        <Col size={15}>
-                            <Text style={{ marginBottom: 10 }}>6s </Text>
-                        </Col>
-                        <Col size={15}>
-                            <Text style={{ marginBottom: 10 }}>4s </Text>
-                        </Col>
-                        <Col size={10}>
-                            <Text style={{ marginBottom: 10 }}>SRR </Text>
-                        </Col>
-                    </Row>
-                    <Row style={{ height: 40, marginTop: 5 }} >
-                        <Col size={60}>
-                            <Text style={{ marginBottom: 10, marginRight: 0, color: 'green' }}>Virat  * </Text>
-                        </Col>
-                        <Col size={15}>
-                            <Text style={{ marginBottom: 10 }}>20</Text>
-                        </Col>
-                        <Col size={15}>
-                            <Text style={{ marginBottom: 10 }}>4 </Text>
-                        </Col>
-                        <Col size={15}>
-                            <Text style={{ marginBottom: 10 }}>3 </Text>
-                        </Col>
-                        <Col size={15}>
-                            <Text style={{ marginBottom: 10 }}>0 </Text>
-                        </Col>
-                        <Col size={10} >
-                            <Text style={{ marginBottom: 10 }}>500 </Text>
-                        </Col>
-                    </Row>
-                    <Row style={{ height: 40 }}>
-                        <Col size={60}>
-                            <Text style={{ marginBottom: 10, marginRight: 0, color: 'green' }}>Rohit </Text>
-                        </Col>
-                        <Col size={15}>
-                            <Text style={{ marginBottom: 10 }}>18</Text>
-                        </Col>
-                        <Col size={15}>
-                            <Text style={{ marginBottom: 10 }}>5</Text>
-                        </Col>
-                        <Col size={15}>
-                            <Text style={{ marginBottom: 10 }}>0</Text>
-                        </Col>
-                        <Col size={15}>
-                            <Text style={{ marginBottom: 10 }}>4</Text>
-                        </Col>
-                        <Col size={10}>
-                            <Text style={{ marginBottom: 10 }}>500 </Text>
-                        </Col>
-                    </Row>
-                    <Row style={{ height: 40, borderBottomWidth: 1, borderBottomColor: '#000' }}>
-                        <Col size={60}>
-                            <Text style={{ marginBottom: 10, marginRight: 0 }}>Bowling </Text>
-                        </Col>
-                        <Col size={15} >
-                            <Text style={{ marginBottom: 10 }}>O</Text>
-                        </Col>
-                        <Col size={15}>
-                            <Text style={{ marginBottom: 10 }}>M </Text>
-                        </Col>
-                        <Col size={15}>
-                            <Text style={{ marginBottom: 10 }}>R </Text>
-                        </Col>
-                        <Col size={15}>
-                            <Text style={{ marginBottom: 10 }}>W </Text>
-                        </Col>
-                        <Col size={10}>
-                            <Text style={{ marginBottom: 10 }}>ER </Text>
-                        </Col>
-                    </Row>
-                    <Row style={{ height: 40, marginTop: 15, }}>
-                        <Col size={60}>
-                            <Text style={{ marginBottom: 10, marginRight: 0, color: 'green' }}>Bumrah </Text>
-                        </Col>
-                        <Col size={15}>
-                            <Text style={{ marginBottom: 10 }}>0.0</Text>
-                        </Col>
-                        <Col size={15}>
-                            <Text style={{ marginBottom: 10 }}>0</Text>
-                        </Col>
-                        <Col size={15}>
-                            <Text style={{ marginBottom: 10 }}>0</Text>
-                        </Col>
-                        <Col size={15}>
-                            <Text style={{ marginBottom: 10 }}>0</Text>
-                        </Col>
-                        <Col size={10}>
-                            <Text style={{ marginBottom: 10 }}>0.0 </Text>
-                        </Col>
-                    </Row>
-                </Grid>
-            </View>
-            <View>
-                <View style={styles.container2}>
-                    <Text style={{ marginRight: 10 }}>This Over : </Text>
-                    <ScrollView horizontal={true}>
+  //penalty runs hooks
+  const [visible, setVisible] = useState(false);
+  const [penaltyrun, setPenaltyruns] = useState(0);
 
-                        <View style={styles.circle} >
-                            <Text style={styles.textover}>1</Text></View>
 
-                        <View style={styles.circle} >
-                            <Text style={styles.textover}>1</Text>
-                        </View>
-                        <View style={styles.circle} >
-                            <Text style={styles.textover}>4</Text>
-                        </View>
-                        <View style={styles.circle} >
-                            <Text style={styles.textover}>6</Text>
-                        </View>
-                        <View style={styles.circle} >
-                            <Text style={styles.textover}>W</Text>
-                        </View>
-                        <View style={styles.circle} >
-                            <Text style={styles.textover}>W</Text>
-                        </View>
-                        <View style={styles.circle} >
-                            <Text style={styles.textover}>W</Text>
-                        </View>
-                        <View style={styles.circle} >
-                            <Text style={styles.textover}>W</Text>
-                        </View>
-                        <View style={styles.circle} >
-                            <Text style={styles.textover}>W</Text>
-                        </View>
-                        <View style={styles.circle} >
-                            <Text style={styles.textover}>W</Text>
-                        </View>
-                        <View style={styles.circle} >
-                            <Text style={styles.textover}>W</Text>
-                        </View>
-                        <View style={styles.circle} >
-                            <Text style={styles.textover}>W</Text>
-                        </View>
-                        <View style={styles.circle} >
-                            <Text style={styles.textover}>W</Text>
-                        </View>
-                        <View style={styles.circle} >
-                            <Text style={styles.textover}>W</Text>
-                        </View>
-                    </ScrollView>
-                </View>
-                <View style={styles.CheckBoxContainer}>
-                    <View style={styles.Checkboxlist}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <Checkbox
-                                style={styles.Checkboxstyle}
-                                status={widechecked ? 'checked' : 'unchecked'}
-                                onPress={() => { setWideChecked(!widechecked); }}
-                                color={'green'}
-                                uncheckColor={'red'}
-                            />
-                            <Text >Wide</Text>
-                        </View>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 10, }}>
-                            <Checkbox
-                                style={styles.Checkboxstyle}
-                                status={noballchecked ? 'checked' : 'unchecked'}
-                                onPress={() => { setNoballChecked(!noballchecked); }}
-                                color={'green'}
-                                uncheckColor={'red'}
-                            />
-                            <Text >No Ball</Text>
-                        </View>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 10, }}>
-                            <Checkbox
-                                style={styles.Checkboxstyle}
-                                status={byeschecked ? 'checked' : 'unchecked'}
-                                onPress={() => { setByesChecked(!byeschecked); }}
-                                color={'green'}
-                                uncheckColor={'red'}
-                            />
-                            <Text >Byes</Text>
-                        </View>
-                        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                            <Checkbox
-                                style={styles.Checkboxstyle}
-                                status={legbyeschecked ? 'checked' : 'unchecked'}
-                                onPress={() => { setLegbyesChecked(!legbyeschecked); }}
-                                color={'green'}
-                                uncheckColor={'red'}
-                            />
-                            <Text >Leg Byes</Text>
-                        </View>
-                    </View>
-                    <View style={styles.Checkboxlist}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 10, }}>
-                            <Checkbox
-                                style={styles.Checkboxstyle}
-                                status={wicketchecked ? 'checked' : 'unchecked'}
-                                onPress={() => { setWicketChecked(!wicketchecked); }}
-                                color={'green'}
-                                uncheckColor={'red'}
-                            />
-                            <Text style={{  marginRight: 10 }}>Wicket</Text>
-                        </View>
-                        {/* <View style={{ flexDirection: 'row', justifyContent: 'space-between', }}> */}
-                        <Button
+  const showDialog = () => {
+    setVisible(true);
+  };
 
-                            style={styles.Checkbutton}
-                            color="#fff"
-                            onPress={() => Alert.alert('Retired hurt')}
-                        >Retire</Button>
-                        <Button
+  const handleCancel = () => {
+    setVisible(false);
+  };
 
-                            style={styles.Checkbutton}
-                            color="#fff"
-                            onPress={() => Alert.alert('BatsMan Swaped')}
-                        >Swap </Button>
-                    </View>
-                    {/* </View> */}
-                </View>
-                <View>
-                    <View style={styles.ScoreContainer}>
-                        <View style={styles.Scorelist}>
-                            <TouchableOpacity>
-                            <View style={styles.Scorecircle} >
-                               
-                                    <Text style={styles.textscore}>0</Text>
-                                
-                            </View>
-                            </TouchableOpacity>
-                            <TouchableOpacity>
-                            <View style={styles.Scorecircle} >
-                                
-                                    <Text style={styles.textscore}>1</Text>
-                               
-                            </View>
-                            </TouchableOpacity>
-                            <TouchableOpacity>
-                            <View style={styles.Scorecircle} >
-                               
-                                    <Text style={styles.textscore}>2</Text>
-                                
-                            </View>
-                            </TouchableOpacity>
-                            <TouchableOpacity>
-                            <View style={styles.Scorecircle} >
-                                
-                                    <Text style={styles.textscore}>3</Text>
-                               
-                            </View>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={styles.Scorelist}>
-                            <TouchableOpacity>
-                            <View style={styles.Scorecircle} >
-                                
-                                    <Text style={styles.textscore}>4</Text>
-                               
-                            </View>
-                            </TouchableOpacity>
-                            <TouchableOpacity>
-                            <View style={styles.Scorecircle} >
-                               
-                                    <Text style={styles.textscore}>5</Text>
-                               
-                            </View>
-                            </TouchableOpacity>
-                            <TouchableOpacity>
-                            <View style={styles.Scorecircle} >
-                                
-                                    <Text style={styles.textscore}>6</Text>
-                               
-                            </View>
-                            </TouchableOpacity>
-                            <TouchableOpacity>
-                             
-                            <View style={styles.Scorecircle} >
-                                <Text style={styles.textscore}>...</Text>
-                            </View>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
+  const handleOK = () => {
+    // The user has pressed the "Delete" button, so here you can do your own logic.
+    // ...Your logic
+    setVisible(false);
+    //penaltyrunsclicked();
+  };
 
-                </View>
 
-            </View>
+
+
+
+
+
+
+
+  //global variables
+  var runs = 0, sruns = 0, bruns = 0, strikerate = 0, fourcount = 0, sixcount = 0;
+  var overs, balls, sballfaced;
+  var bover = 0, bballs = 0;
+  var wideruns = 1;
+  var noballruns = 1, wickets = 0, maiden = 0;
+  //bowler economy rare and team current run rate
+  var ber, teamrr, bwicket = 0;
+
+
+  //each over runs
+  const [theArray, setTheArray] = useState([]);
+
+
+  //when user clicks one to six scores button
+  const zeroClicked = () => {
+    //over runs
+
+
+
+    untickcheckbox();
+    //wide
+    if (widechecked) {
+
+      //team runs
+      runs = teamrun + wideruns;
+      setTeamrun(runs);
+
+      //bowler runs
+      bruns = bowlerruns + 1;
+      setBowlerruns(bruns);
+      setWideChecked(false);
+
+
+    }
+    //no ball
+    else if (noballchecked) {
+      //team runs
+      runs = teamrun + noballruns;
+      setTeamrun(runs);
+      //striker run
+      sruns = strikerrun + 0;
+      setStrikerrun(sruns);
+      //bowler runs
+      bruns = bowlerruns + 1;
+      setBowlerruns(bruns);
+
+      //stiker ball faced
+      incrementstrikerballfaced();
+      setNoballChecked(false);
+
+    }
+
+    else {
+      //team runs
+      runs = teamrun + 0;
+      setTeamrun(runs);
+      if (byeschecked || legbyeschecked) {
+        //batsman runs
+        sruns = strikerrun + 0;
+        setStrikerrun(sruns);
+        setByesChecked(false);
+        setLegbyesChecked(false);
+
+
+      }
+      else {
+        //batsman runs
+        sruns = strikerrun + 0;
+        setStrikerrun(sruns);
+        //bowler runs
+        bruns = bowlerruns + 0;
+        setBowlerruns(bruns);
+
+
+
+      }
+
+      if (wicketchecked) {
+        //overs runs 
+        setTheArray(oldArray => [...oldArray, 'W']);
+        wickets = teamwickets + 1;
+        setTeamwickets(wickets);
+        //bowler wicket
+        bwicket = bowlerwickets + 1;
+        setBowlerwickets(bwicket);
+
+      }
+      else {
+        //overs runs 
+        setTheArray(oldArray => [...oldArray, 0]);
+      }
+
+      //overs runs
+      incrementovers();
+      //stiker ball faced
+      incrementstrikerballfaced();
+      //increment bowler overs
+      incrementbowlerovers();
+      //calculate strike rate of striker batsman
+      //calculateStrikerate(strikerrun,strikerballfaced);
+    }
+
+
+
+
+
+
+
+
+
+  };
+  const oneClicked = () => {
+    if (wicketchecked) {
+      //overs runs 
+      setTheArray(oldArray => [...oldArray, 'W']);
+      wickets = teamwickets + 1;
+      setTeamwickets(wickets);
+      //bowler wicket
+      bwicket = bowlerwickets + 1;
+      setBowlerwickets(bwicket);
+    }
+    else {
+      //overs runs 
+      //over runs
+      setTheArray(oldArray => [...oldArray, 1]);
+    }
+
+
+
+    untickcheckbox();
+    //wide
+    if (widechecked) {
+      //team runs
+      runs = teamrun + wideruns + 1;
+      setTeamrun(runs);
+
+      //bowler runs
+      bruns = bowlerruns + wideruns + 1;
+      setBowlerruns(bruns);
+
+      setWideChecked(false);
+
+
+    }
+    //no ball
+    else if (noballchecked) {
+      //team runs
+      runs = teamrun + noballruns + 1;
+      setTeamrun(runs);
+      //striker run
+      sruns = strikerrun + 1;
+      setStrikerrun(sruns);
+      //bowler runs
+      bruns = bowlerruns + 1 + noballruns;
+      setBowlerruns(bruns);
+
+      //stiker ball faced
+      incrementstrikerballfaced();
+      //changing crease for odd runs
+      changecrease();
+
+      setNoballChecked(false);
+
+    }
+    else {
+      runs = teamrun + 1;
+      setTeamrun(runs);
+      //byes
+      if (byeschecked || legbyeschecked) {
+        //batsman runs
+        sruns = strikerrun;
+        setStrikerrun(sruns);
+        setByesChecked(false);
+        setLegbyesChecked(false);
+
+      }
+      else {
+        sruns = strikerrun + 1;
+        setStrikerrun(sruns);
+
+        //bowler runs
+        bruns = bowlerruns + 1;
+        setBowlerruns(bruns);
+
+
+      }
+
+
+
+
+
+      incrementovers();
+      incrementstrikerballfaced();
+      incrementbowlerovers();
+      //changing crease for odd runs
+      changecrease();
+    }
+
+
+
+  };
+  const twoClicked = () => {
+    if (wicketchecked) {
+      //overs runs 
+      setTheArray(oldArray => [...oldArray, 'W']);
+      wickets = teamwickets + 1;
+      setTeamwickets(wickets);
+      //bowler wicket
+      bwicket = bowlerwickets + 1;
+      setBowlerwickets(bwicket);
+    }
+    else {
+      //overs runs 
+      //over runs
+      setTheArray(oldArray => [...oldArray, 2]);
+    }
+
+
+    untickcheckbox();
+    //wide
+    if (widechecked) {
+      //team runs
+      runs = teamrun + wideruns + 2;
+      setTeamrun(runs);
+
+      //bowler runs
+      bruns = bowlerruns + wideruns + 2;
+      setBowlerruns(bruns);
+
+      setWideChecked(false);
+
+
+    }
+    //no ball
+    else if (noballchecked) {
+      //team runs
+      runs = teamrun + noballruns + 2;
+      setTeamrun(runs);
+      //striker run
+      sruns = strikerrun + 2;
+      setStrikerrun(sruns);
+      //bowler runs
+      bruns = bowlerruns + 2 + noballruns;
+      setBowlerruns(bruns);
+
+      //stiker ball faced
+      incrementstrikerballfaced();
+      //changing crease for odd runs
+
+
+      setNoballChecked(false);
+
+    }
+    else {
+      runs = teamrun + 2;
+      setTeamrun(runs);
+
+
+      if (byeschecked || legbyeschecked) {
+        //batsman runs
+        sruns = strikerrun;
+        setStrikerrun(sruns);
+        setByesChecked(false);
+        setLegbyesChecked(false);
+
+      }
+      else {
+        sruns = strikerrun + 2;
+        setStrikerrun(sruns);
+
+        //bowler runs
+        bruns = bowlerruns + 2;
+        setBowlerruns(bruns);
+
+      }
+
+
+
+      incrementovers();
+      incrementstrikerballfaced();
+      incrementbowlerovers();
+    }
+  };
+  const threeClicked = () => {
+    if (wicketchecked) {
+      //overs runs 
+      setTheArray(oldArray => [...oldArray, 'W']);
+      wickets = teamwickets + 1;
+      setTeamwickets(wickets);
+      //bowler wicket
+      bwicket = bowlerwickets + 1;
+      setBowlerwickets(bwicket);
+    }
+    else {
+      //overs runs 
+      //over runs
+      setTheArray(oldArray => [...oldArray, 3]);
+    }
+
+    untickcheckbox();
+    //wide
+    if (widechecked) {
+      //team runs
+      runs = teamrun + wideruns + 3;
+      setTeamrun(runs);
+
+      //bowler runs
+      bruns = bowlerruns + wideruns + 3;
+      setBowlerruns(bruns);
+
+      setWideChecked(false);
+
+
+    }
+    //no ball
+    else if (noballchecked) {
+      //team runs
+      runs = teamrun + noballruns + 3;
+      setTeamrun(runs);
+
+      //striker run
+      sruns = strikerrun + 3;
+      setStrikerrun(sruns);
+      //bowler runs
+      bruns = bowlerruns + 3 + noballruns;
+      setBowlerruns(bruns);
+
+      //stiker ball faced
+      incrementstrikerballfaced();
+      //changing crease for odd runs
+      changecrease();
+
+      setNoballChecked(false)
+        ;
+
+    }
+    else {
+      runs = teamrun + 3;
+      setTeamrun(runs);
+
+      if (byeschecked || legbyeschecked) {
+        //batsman runs
+        sruns = strikerrun;
+        setStrikerrun(sruns);
+        setByesChecked(false);
+        setLegbyesChecked(false);
+
+      }
+      else {
+        sruns = strikerrun + 3;
+        setStrikerrun(sruns);
+
+        //bowler runs
+        bruns = bowlerruns + 3;
+        setBowlerruns(bruns);
+
+      }
+
+
+
+
+
+      incrementovers();
+      incrementstrikerballfaced();
+      incrementbowlerovers();
+
+      //changing crease for odd runs
+      changecrease();
+    }
+  };
+  const fourClicked = () => {
+    if (wicketchecked) {
+      //overs runs 
+      setTheArray(oldArray => [...oldArray, 'W']);
+      wickets = teamwickets + 1;
+      setTeamwickets(wickets);
+      //bowler wicket
+      bwicket = bowlerwickets + 1;
+      setBowlerwickets(bwicket);
+    }
+    else {
+      //overs runs 
+      //over runs
+      setTheArray(oldArray => [...oldArray, 4]);
+    }
+
+    untickcheckbox();
+    //wide
+    if (widechecked) {
+      //team runs
+      runs = teamrun + wideruns + 4;
+      setTeamrun(runs);
+
+      //bowler runs
+      bruns = bowlerruns + wideruns + 4;
+      setBowlerruns(bruns);
+
+      setWideChecked(false);
+
+
+    }
+    //no ball
+    else if (noballchecked) {
+      //team runs
+      runs = teamrun + noballruns + 4;
+      setTeamrun(runs);
+      //striker run
+      sruns = strikerrun + 4;
+      setStrikerrun(sruns);
+      //bowler runs
+      bruns = bowlerruns + 4 + noballruns;
+      setBowlerruns(bruns);
+
+      //stiker ball faced
+      incrementstrikerballfaced();
+
+
+      fourcount = strikerfourcount + 1;
+      setStrikefourcount(fourcount);
+
+
+
+      setNoballChecked(false);
+
+    }
+    else {
+      runs = teamrun + 4;
+      setTeamrun(runs);
+      if (byeschecked || legbyeschecked) {
+        //batsman runs
+        sruns = strikerrun;
+        setStrikerrun(sruns);
+        setByesChecked(false);
+        setLegbyesChecked(false);
+
+      }
+      else {
+        sruns = strikerrun + 4;
+        setStrikerrun(sruns);
+        fourcount = strikerfourcount + 1;
+        setStrikefourcount(fourcount);
+
+        //bowler runs
+        bruns = bowlerruns + 4;
+        setBowlerruns(bruns);
+
+
+      }
+
+
+
+
+      incrementovers();
+      incrementstrikerballfaced();
+      incrementbowlerovers();
+    }
+
+  };
+  const fiveClicked = () => {
+    if (wicketchecked) {
+      //overs runs 
+      setTheArray(oldArray => [...oldArray, 'W']);
+      wickets = teamwickets + 1;
+      setTeamwickets(wickets);
+      //bowler wicket
+      bwicket = bowlerwickets + 1;
+      setBowlerwickets(bwicket);
+    }
+    else {
+      //overs runs 
+      //over runs
+      setTheArray(oldArray => [...oldArray, 5]);
+    }
+
+    untickcheckbox();
+    //wide
+    if (widechecked) {
+      //team runs
+      runs = teamrun + wideruns + 5;
+      setTeamrun(runs);
+
+      //bowler runs
+      bruns = bowlerruns + wideruns + 5;
+      setBowlerruns(bruns);
+
+      setWideChecked(false);
+
+
+    }
+    //no ball
+    else if (noballchecked) {
+      //team runs
+      runs = teamrun + noballruns + 5;
+      setTeamrun(runs);
+      //striker run
+      sruns = strikerrun + 5;
+      setStrikerrun(sruns);
+      //bowler runs
+      bruns = bowlerruns + 5 + noballruns;
+      setBowlerruns(bruns);
+
+      //stiker ball faced
+      incrementstrikerballfaced();
+      //changing crease for odd runs
+      changecrease();
+
+      setNoballChecked(false);
+
+    }
+    else {
+      runs = teamrun + 5;
+      setTeamrun(runs);
+
+      if (byeschecked || legbyeschecked) {
+        //batsman runs
+        sruns = strikerrun;
+        setStrikerrun(sruns);
+        setByesChecked(false);
+        setLegbyesChecked(false);
+
+      }
+      else {
+        sruns = strikerrun + 5;
+        setStrikerrun(sruns);
+
+        //bowler runs
+        bruns = bowlerruns + 5;
+        setBowlerruns(bruns);
+
+      }
+
+
+
+
+
+      incrementovers();
+      incrementstrikerballfaced();
+      incrementbowlerovers();
+
+      //changing crease for odd runs
+      changecrease();
+    }
+
+  };
+  const sixClicked = () => {
+    if (wicketchecked) {
+      //overs runs 
+      setTheArray(oldArray => [...oldArray, 'W']);
+      wickets = teamwickets + 1;
+      setTeamwickets(wickets);
+      //bowler wicket
+      bwicket = bowlerwickets + 1;
+      setBowlerwickets(bwicket);
+    }
+    else {
+      //overs runs 
+      //over runs
+      setTheArray(oldArray => [...oldArray, 6]);
+    }
+
+    untickcheckbox();
+    //wide
+    if (widechecked) {
+      //team runs
+      runs = teamrun + wideruns + 6;
+      setTeamrun(runs);
+
+      //bowler runs
+      bruns = bowlerruns + wideruns + 6;
+      setBowlerruns(bruns);
+
+      setWideChecked(false);
+
+
+    }
+    //no ball
+    else if (noballchecked) {
+      //team runs
+      runs = teamrun + noballruns + 6;
+      setTeamrun(runs);
+      //striker run
+      sruns = strikerrun + 6;
+      setStrikerrun(sruns);
+      //bowler runs
+      bruns = bowlerruns + 6 + noballruns;
+      setBowlerruns(bruns);
+
+      //stiker ball faced
+      incrementstrikerballfaced();
+      //changing crease for odd runs
+
+
+      sixcount = strikersixcount + 1;
+      setStrikesixcount(sixcount);
+
+
+      setNoballChecked(false);
+
+    }
+    else {
+
+      runs = teamrun + 6;
+      setTeamrun(runs);
+
+      if (byeschecked || legbyeschecked) {
+        //batsman runs
+        sruns = strikerrun;
+        setStrikerrun(sruns);
+        setByesChecked(false);
+        setLegbyesChecked(false);
+
+      }
+      else {
+
+        sruns = strikerrun + 6;
+        setStrikerrun(sruns);
+
+        sixcount = strikersixcount + 1;
+        setStrikesixcount(sixcount);
+
+        //bowler runs
+        bruns = bowlerruns + 6;
+        setBowlerruns(bruns);
+
+
+      }
+
+
+
+
+      incrementovers();
+      incrementstrikerballfaced();
+      incrementbowlerovers();
+    }
+
+  };
+
+
+
+  //incrementing overs
+  const incrementovers = () => {
+    //overs
+    balls = teamballs + 1;
+    if (balls == 6) {
+      overs = teamovers + 1;
+      balls = 0;
+      setTeamovers(overs);
+    }
+    setTeamballs(balls);
+    //calculating team current runrate
+    if (balls != 0) {
+      var teambowled = '' + teamovers + '.' + balls;
+    }
+    else {
+      teambowled = teamovers + 1;
+    }
+    //console.log(bowled);
+    teamrr = runs / teambowled;
+    //float precision fot 2 points
+    var teamrr2 = teamrr.toFixed(2);
+    setTeamrunrate(teamrr2);
+
+
+
+
+
+
+  }
+  //incrementing bowler overs
+  const incrementbowlerovers = () => {
+    //bowler overs
+    bballs = bowlerballs + 1;
+    if (bballs == 6) {
+      if (bowlerruns == 0) {
+        maiden = bowlermaiden + 1;
+        console.log(maiden);
+        setBowlermaiden(maiden);
+      }
+      //console.log('ggg')
+      bover = bowlerover + 1;
+      bballs = 0;
+      setBowlerover(bover);
+
+
+      strikerdatainsert();
+    }
+    setBowleballs(bballs);
+
+    if (balls != 0) {
+      var bowled = '' + bowlerover + '.' + bballs;
+    }
+    else {
+      bowled = bowlerover + 1;
+    }
+    //console.log(bowled);
+    ber = bruns / bowled;
+    //float precision fot 2 points
+    ber = ber.toFixed(2);
+
+    setBowlerer(ber);
+
+
+
+  }
+  //incrementing striker ball faced
+  const incrementstrikerballfaced = () => {
+    //ball faced
+    sballfaced = strikerballfaced + 1;
+    setStrikerballfaced(sballfaced);
+    //calculating strikerate
+
+
+    //calculating strikerate
+    if (sballfaced != 0) {
+      strikerate = (sruns / sballfaced) * 100;
+      strikerate = strikerate.toFixed(2);
+      setStrikesrate(strikerate);
+    }
+    else {
+      strikerate = 0;
+      setStrikesrate(strikerate);
+
+    }
+
+  }
+  //swapping palyers
+  const swap = () => {
+    var tname, trun, tball, tsix, tfour, tstrikerate;
+    //copying non striker all data into temp variable
+    tname = nonstrikername;
+    trun = nonstrikerrun;
+    tball = nonstrikerballfaced;
+    tfour = nonstrikerfourcount;
+    tsix = nonstrikersixcount;
+    tstrikerate = nonstrikersrate;
+
+
+
+    //swapping striker data with non-striker data
+    setStrikername(tname);
+    setStrikerrun(trun);
+    setStrikerballfaced(tball);
+    setStrikesixcount(tsix);
+    setStrikefourcount(tfour);
+    setStrikesrate(tstrikerate);
+    //swapping non- striker data with striker data
+    setNonstrikername(strikername);
+    setNonstrikerrun(strikerrun);
+    setNonstrikerballfaced(strikerballfaced);
+    setNonstrikesixcount(strikersixcount);
+    setNonstrikefourcount(strikerfourcount);
+    setnonstrikesrate(strikersrate);
+
+
+
+
+
+  }
+  //changing crease of batsman after odd runs
+  const changecrease = () => {
+    var tname, trun, tball, tsix, tfour, tstrikerate;
+    //copying non striker all data into temp variable
+    tname = nonstrikername;
+    trun = nonstrikerrun;
+    tball = nonstrikerballfaced;
+    tfour = nonstrikerfourcount;
+    tsix = nonstrikersixcount;
+    tstrikerate = nonstrikersrate;
+
+    //swapping striker data with non-striker data
+    setStrikername(tname);
+    setStrikerrun(trun);
+    setStrikerballfaced(tball);
+    setStrikesixcount(tsix);
+    setStrikefourcount(tfour);
+    setStrikesrate(tstrikerate);
+    //swapping non- striker data with striker data
+    setNonstrikername(strikername);
+    setNonstrikerrun(sruns);
+    setNonstrikerballfaced(sballfaced);
+    setNonstrikesixcount(strikersixcount);
+    setNonstrikefourcount(strikerfourcount);
+    setnonstrikesrate(strikerate);
+
+    //console.log(strikerate);
+
+
+  }
+  //untick all the checkbox
+  const untickcheckbox = () => {
+    setWideChecked(false);
+    setNoballChecked(false);
+    setByesChecked(false);
+    setLegbyesChecked(false);
+    setWicketChecked(false);
+
+  }
+  //************************************************************************* */
+  // back end code begins
+
+  useEffect(() => {
+    createTable3();
+    //deleteTable();
+  }, []);
+
+  //batting and bowling,wickets table creation 
+  const createTable3 = () => {
+
+    db.transaction(tx => {
+      tx.executeSql(
+        'CREATE TABLE IF NOT EXISTS batting (match_id INTEGER ,teamname TEXT,innings INTEGER,' +
+        'batsman_name TEXT,run INTEGER,ball INTEGER,six INTEGER,four INTEGER,' +
+        'strikerate TEXT,out_type TEXT,support TEXT,bowler TEXT)'
+      )
+    });
+    db.transaction(tx => {
+      tx.executeSql(
+        'CREATE TABLE IF NOT EXISTS bowling (match_id INTEGER ,teamname TEXT,innings INTEGER,' +
+        'bowler_name TEXT,over INTEGER,maiden INTEGER,bowler_run INTEGER,wickets INTEGER,economy INTEGER)')
+    });
+
+
+  }
+
+  //striker data insertion
+  const strikerdatainsert = () => {
+    //getting latest value of four count
+    setStrikefourcount((state) => {
+      fourcount = state;
+      return state;
+    });
+    //getting latest value of four count
+    setStrikesixcount((state) => {
+      sixcount = state;
+      return state;
+    });
+    //inserting striker data
+    db.transaction(tx => {
+      tx.executeSql('INSERT INTO batting (match_id,teamname,innings,batsman_name,run,ball,six,four,strikerate) values (?,?,?,?,?,?,?,?,?)', [1, teamname, 1, strikername, sruns, sballfaced, sixcount, fourcount, strikerate],
+        (tx, results) => {
+
+          console.log('Results', results.rowsAffected);
+          if (results.rowsAffected > 0) {
+            console.log('inserted striker data 1');
+            alert('inserted striker data 1');
+          }
+        },
+        (tx, error) => console.log('Error', error))
+    });
+    //inserting non-striker data
+    db.transaction(tx => {
+      tx.executeSql('INSERT INTO batting (match_id,teamname,innings,batsman_name,run,ball,six,four,strikerate) values (?,?,?,?,?,?,?,?,?)', [1, teamname, 1, nonstrikername, nonstrikerrun, nonstrikerballfaced, nonstrikersixcount, nonstrikerfourcount, nonstrikersrate],
+        (tx, results) => {
+
+          console.log('Results', results.rowsAffected);
+          if (results.rowsAffected > 0) {
+            console.log('inserted striker data 2');
+            //alert('inserted striker data 1');
+          }
+        },
+        (tx, error) => console.log('Error', error))
+    });
+
+    //inserting bowler data
+    db.transaction(tx => {
+      tx.executeSql('INSERT INTO bowling (match_id,teamname,innings,bowler_name,over,maiden,bowler_run,wickets,economy) values (?,?,?,?,?,?,?,?,?)', [1, teamname, 1, bowlername, bover, bowlermaiden, bruns, bwicket, ber],
+        (tx, results) => {
+
+          console.log('Results', results.rowsAffected);
+          if (results.rowsAffected > 0) {
+            console.log('inserted bowler data 1');
+
+          }
+        },
+        (tx, error) => console.log('Error', error))
+    });
+
+
+
+
+  }
+
+  const go = () => {
+
+    navigation.navigate('DetailsScreen');
+  }
+
+  //deleting data
+  const deleteTable = () => {
+    db.transaction(tx => {
+      tx.executeSql(
+        'delete from batting'
+      )
+    })
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+  return (
+
+    <View style={styles.container} >
+
+      <ScrollView>
+        <View style={styles.modal}>
+
+          <Dialog.Container visible={visible}>
+            <Dialog.Title style={{ fontWeight: 'bold' }}>End of the First inning ?</Dialog.Title>
+            <Dialog.Description style={{ color: 'green', fontSize: 15 }}>Scored runs(including overthrows)?</Dialog.Description>
+            <Dialog.Input label=" " style={{ marginTop: -20 }} onChangeText={(value) => setPenaltyruns(value)}>0</Dialog.Input>
+            <Dialog.Button label="Cancel" onPress={handleCancel} />
+            <Dialog.Button label="Ok" onPress={handleOK} />
+          </Dialog.Container>
+        </View>
+        <View style={styles.contentBody}>
+          <View style={styles.cardhead}>
+            <Text style={{ marginBottom: 5 }}>{teamname} , 1st innings</Text>
+            <Text style={{ marginTop: 5, marginRight: 50 }}>CRR</Text>
+          </View>
+          <View style={styles.card}>
+            <Text style={styles.text}>{teamrun} - {teamwickets}</Text>
+            <Text style={styles.overs}> ({teamovers}.{teamballs}) </Text>
+            <Text style={styles.crr}> ({teamrunrate}) </Text>
+          </View>
+
+        </View>
+        <View style={styles.battingBody}>
+          <Grid >
+
+            <Row style={{ height: 40, borderBottomWidth: 1, borderBottomColor: '#000' }}>
+              <Col size={60}>
+                <Text style={{ marginBottom: 10, marginRight: 0 }}>Batting </Text>
+              </Col>
+              <Col size={15} >
+                <Text style={{ marginBottom: 10 }}>R </Text>
+              </Col>
+              <Col size={15}>
+                <Text style={{ marginBottom: 10 }}>B </Text>
+              </Col>
+              <Col size={15}>
+                <Text style={{ marginBottom: 10 }}>6s </Text>
+              </Col>
+              <Col size={15}>
+                <Text style={{ marginBottom: 10 }}>4s </Text>
+              </Col>
+              <Col size={10}>
+                <Text style={{ marginBottom: 10 }}>SRR </Text>
+              </Col>
+            </Row>
+            <Row style={{ height: 40, marginTop: 5 }} >
+              <Col size={60}>
+                <Text style={{ marginBottom: 10, marginRight: 0, color: 'green' }}>{strikername} * </Text>
+              </Col>
+              <Col size={15}>
+                <Text style={{ marginBottom: 10 }}>{strikerrun}</Text>
+              </Col>
+              <Col size={15}>
+                <Text style={{ marginBottom: 10 }}>{strikerballfaced} </Text>
+              </Col>
+              <Col size={15}>
+                <Text style={{ marginBottom: 10 }}>{strikersixcount} </Text>
+              </Col>
+              <Col size={15}>
+                <Text style={{ marginBottom: 10 }}>{strikerfourcount} </Text>
+              </Col>
+              <Col size={10} >
+                <Text style={{ marginBottom: 10 }}>{strikersrate} </Text>
+              </Col>
+            </Row>
+            <Row style={{ height: 40 }}>
+              <Col size={60}>
+                <Text style={{ marginBottom: 10, marginRight: 0, color: 'green' }}>{nonstrikername}</Text>
+              </Col>
+              <Col size={15}>
+                <Text style={{ marginBottom: 10 }}>{nonstrikerrun}</Text>
+              </Col>
+              <Col size={15}>
+                <Text style={{ marginBottom: 10 }}>{nonstrikerballfaced}</Text>
+              </Col>
+              <Col size={15}>
+                <Text style={{ marginBottom: 10 }}>{nonstrikersixcount}</Text>
+              </Col>
+              <Col size={15}>
+                <Text style={{ marginBottom: 10 }}>{nonstrikerfourcount}</Text>
+              </Col>
+              <Col size={10}>
+                <Text style={{ marginBottom: 10 }}>{nonstrikersrate}</Text>
+              </Col>
+            </Row>
+            <Row style={{ height: 40, borderBottomWidth: 1, borderBottomColor: '#000' }}>
+              <Col size={60}>
+                <Text style={{ marginBottom: 10, marginRight: 0 }}>Bowling </Text>
+              </Col>
+              <Col size={15} >
+                <Text style={{ marginBottom: 10 }}>O</Text>
+              </Col>
+              <Col size={15}>
+                <Text style={{ marginBottom: 10 }}>M </Text>
+              </Col>
+              <Col size={15}>
+                <Text style={{ marginBottom: 10 }}>R </Text>
+              </Col>
+              <Col size={15}>
+                <Text style={{ marginBottom: 10 }}>W </Text>
+              </Col>
+              <Col size={10}>
+                <Text style={{ marginBottom: 10 }}>ER </Text>
+              </Col>
+            </Row>
+            <Row style={{ height: 40, marginTop: 15, }}>
+              <Col size={60}>
+                <Text style={{ marginBottom: 10, marginRight: 0, color: 'green' }}>{bowlername} </Text>
+              </Col>
+              <Col size={15}>
+                <Text style={{ marginBottom: 10 }}>{bowlerover}.{bowlerballs}</Text>
+              </Col>
+              <Col size={15}>
+                <Text style={{ marginBottom: 10 }}>{bowlermaiden}</Text>
+              </Col>
+              <Col size={15}>
+                <Text style={{ marginBottom: 10 }}>{bowlerruns}</Text>
+              </Col>
+              <Col size={15}>
+                <Text style={{ marginBottom: 10 }}>{bowlerwickets}</Text>
+              </Col>
+              <Col size={10}>
+                <Text style={{ marginBottom: 10 }}>{bowlerer} </Text>
+              </Col>
+            </Row>
+          </Grid>
+        </View>
+        <View>
+          <View style={styles.container2}>
+            <Text style={{ marginRight: 10 }}>This Over : </Text>
+            <ScrollView horizontal={true}>
+              {/* showing runs in each over */}
+
+              {theArray.map(run => <View style={styles.circle} >
+                <Text style={styles.textover} key={run.toString()}>{run}</Text>
+              </View>)}
+
+
+
             </ScrollView>
-        </View >
-    );
+          </View>
+          <View style={styles.CheckBoxContainer}>
+            <View style={styles.Checkboxlist}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Checkbox
+                  style={styles.Checkboxstyle}
+                  status={widechecked ? 'checked' : 'unchecked'}
+                  onPress={() => { setWideChecked(!widechecked); }}
+                  color={'green'}
+                  uncheckColor={'red'}
+                />
+                <Text >Wide</Text>
+              </View>
+              <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 10, }}>
+                <Checkbox
+                  style={styles.Checkboxstyle}
+                  status={noballchecked ? 'checked' : 'unchecked'}
+                  onPress={() => { setNoballChecked(!noballchecked); }}
+                  color={'green'}
+                  uncheckColor={'red'}
+                />
+                <Text >No Ball</Text>
+              </View>
+              <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 10, }}>
+                <Checkbox
+                  style={styles.Checkboxstyle}
+                  status={byeschecked ? 'checked' : 'unchecked'}
+                  onPress={() => { setByesChecked(!byeschecked); }}
+                  color={'green'}
+                  uncheckColor={'red'}
+                />
+                <Text >Byes</Text>
+              </View>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Checkbox
+                  style={styles.Checkboxstyle}
+                  status={legbyeschecked ? 'checked' : 'unchecked'}
+                  onPress={() => { setLegbyesChecked(!legbyeschecked); }}
+                  color={'green'}
+                  uncheckColor={'red'}
+                />
+                <Text >Leg Byes</Text>
+              </View>
+            </View>
+            <View style={styles.Checkboxlist}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', marginLeft: 10, }}>
+                <Checkbox
+                  style={styles.Checkboxstyle}
+                  status={wicketchecked ? 'checked' : 'unchecked'}
+                  onPress={() => { setWicketChecked(!wicketchecked); }}
+                  color={'green'}
+                  uncheckColor={'red'}
+                />
+                <Text style={{ marginRight: 10 }}>Wicket</Text>
+              </View>
+              {/* <View style={{ flexDirection: 'row', justifyContent: 'space-between', }}> */}
+              <Button
+
+                style={styles.Checkbutton}
+                color="#fff"
+                onPress={() =>
+                  //navigating to startmatch screen
+                  navigation.navigate('PlayerRetired', {
+                    striker: strikername, nonstriker: nonstrikername
+                  })}
+
+              >Retire</Button>
+            <Button
+
+              style={styles.Checkbutton}
+              color="#fff"
+
+              onPress={swap}
+            >Swap </Button>
+          </View>
+          {/* </View> */}
+        </View>
+        <View>
+          <View style={styles.ScoreContainer}>
+            <View style={styles.Scorelist}>
+              <TouchableOpacity onPress={zeroClicked}>
+                <View style={styles.Scorecircle} >
+
+                  <Text style={styles.textscore}>0</Text>
+
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={oneClicked}>
+                <View style={styles.Scorecircle} >
+
+                  <Text style={styles.textscore}>1</Text>
+
+                </View>
+              </TouchableOpacity >
+              <TouchableOpacity onPress={twoClicked}>
+                <View style={styles.Scorecircle} >
+
+                  <Text style={styles.textscore}>2</Text>
+
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={threeClicked}>
+                <View style={styles.Scorecircle} >
+
+                  <Text style={styles.textscore}>3</Text>
+
+                </View>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.Scorelist}>
+              <TouchableOpacity onPress={fourClicked} >
+                <View style={styles.Scorecircle} >
+
+                  <Text style={styles.textscore}>4</Text>
+
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={fiveClicked}>
+                <View style={styles.Scorecircle} >
+
+                  <Text style={styles.textscore}>5</Text>
+
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={sixClicked}>
+                <View style={styles.Scorecircle} >
+
+                  <Text style={styles.textscore}>6</Text>
+
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity>
+
+                <View style={styles.Scorecircle}  >
+                  <TouchableOpacity //</View>onPress={go}
+                    onPress={showDialog}>
+                    <Text style={styles.textscore} >...</Text>
+                  </TouchableOpacity>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+        </View>
+
+    </View>
+      </ScrollView >
+    </View >
+  );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        //marginTop:40,
-        backgroundColor: "#F7F7F7"
+  container: {
+    flex: 1,
+    //marginTop: 40,
+    backgroundColor: "#F7F7F7"
 
-    },
-    textover: {
-        padding: 4,
-        marginLeft: 6
-    },
-    textscore: {
-        padding: 4,
-        fontSize: 20,
-        marginLeft: 19,
-        marginTop: 11,
-        alignItems: 'center',
-    },
-    container2: {
-        margin: 10,
-        borderRadius: 10,
-        marginBottom: 2,
-        height: 50,
-        alignItems: 'center',
-        flexDirection: 'row',
-        padding: 5,
-        backgroundColor: '#fff',
-       
-        elevation: 10,
-        shadowColor: '#171717',
-        
-    },
-    circle: {
-        marginLeft: 5,
-        width: 30,
-        height: 30,
-        borderRadius: 30 / 2,
-        backgroundColor: "#fff",
-        borderColor: 'grey',
-        borderWidth: 1,
-    },
-    Scorecircle: {
-        margin: 10,
-        width: 60,
-        height: 60,
-        borderRadius: 30,
-        backgroundColor: "#fff",
-        borderColor: 'green',
-        textAlign: 'center',
-        borderWidth: 2,
-    },
-    contentBody: {
-        margin: 10,
-        padding: 10,
-        backgroundColor: 'white',
-        borderRadius: 10,
-        justifyContent: 'space-between',
-        elevation: 10,
-        shadowColor: '#171717',
-        
-    },
-    battingBody: {
-        margin: 10,
-        padding: 10,
-        marginTop: 0,
-        backgroundColor: 'white',
-        borderRadius: 10,
-        height: 220,
-        borderRadius: 13,
-        elevation: 10,
-        shadowColor: '#171717',
+  },
+  textover: {
+    padding: 4,
+    marginLeft: 6
+  },
+  textscore: {
+    padding: 4,
+    fontSize: 20,
+    marginLeft: 19,
+    marginTop: 11,
+    alignItems: 'center',
+  },
+  container2: {
+    margin: 10,
+    borderRadius: 10,
+    marginBottom: 2,
+    height: 50,
+    alignItems: 'center',
+    flexDirection: 'row',
+    padding: 5,
+    backgroundColor: '#fff',
+
+    elevation: 10,
+    shadowColor: '#171717',
+
+  },
+  circle: {
+    marginLeft: 5,
+    width: 30,
+    height: 30,
+    borderRadius: 30 / 2,
+    backgroundColor: "#fff",
+    borderColor: 'grey',
+    borderWidth: 1,
+  },
+  Scorecircle: {
+    margin: 10,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: "#fff",
+    borderColor: 'green',
+    textAlign: 'center',
+    borderWidth: 2,
+  },
+  contentBody: {
+    margin: 10,
+    padding: 10,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    justifyContent: 'space-between',
+    elevation: 10,
+    shadowColor: '#171717',
+
+  },
+  battingBody: {
+    margin: 10,
+    padding: 10,
+    marginTop: 0,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    height: 220,
+    borderRadius: 13,
+    elevation: 10,
+    shadowColor: '#171717',
 
 
 
-    },
-    ScoreContainer: {
-        margin:10,
-        borderRadius: 15,
-        alignItems: 'center',
-        backgroundColor: '#fff',
-        elevation: 10,
-        shadowColor: '#171717',
-    },
-    CheckBoxContainer: {
-        margin: 10,
-        borderRadius: 15,
-        alignItems: 'center',
-        backgroundColor: '#fff',
-        paddingBottom: 20,
-        elevation: 10,
-        shadowColor: '#171717',
-    },
-    Scorelist: {
-        flexDirection: "row",
-    },
-    Checkboxlist: {
-        flexDirection: "row",
-        marginTop: 10,
-    },
-    Checkboxstyle: {
-        marginLeft: 10,
-        fontSize: 10,
-        borderColor: '#fff'
-    },
-    Checkbutton: {
-        backgroundColor: 'green',
-        //padding: 5,
-        marginLeft: 5,
-        width: 120,
-        height: 40,
-        fontSize: 15
+  },
+  ScoreContainer: {
+    margin: 10,
+    borderRadius: 15,
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    elevation: 10,
+    shadowColor: '#171717',
+  },
+  CheckBoxContainer: {
+    margin: 10,
+    borderRadius: 15,
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    paddingBottom: 20,
+    elevation: 10,
+    shadowColor: '#171717',
+  },
+  Scorelist: {
+    flexDirection: "row",
+  },
+  Checkboxlist: {
+    flexDirection: "row",
+    marginTop: 10,
+  },
+  Checkboxstyle: {
+    marginLeft: 10,
+    fontSize: 10,
+    borderColor: '#fff'
+  },
+  Checkbutton: {
+    backgroundColor: 'green',
+    //padding: 5,
+    marginLeft: 5,
+    width: 120,
+    height: 40,
+    fontSize: 15
 
-    },
-    card: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-    },
-    cardhead: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-    },
+  },
+  card: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  cardhead: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
 
-    text: {
-        fontSize: 30
-    },
-    overs: {
-        alignItems: 'flex-start',
-        marginTop: 10,
-        marginRight: 110,
-        
-    },
-    crr: {
-        alignItems: 'flex-start',
-        marginTop: 10,
-        marginRight: 50,
-    },
+  text: {
+    fontSize: 30
+  },
+  overs: {
+    alignItems: 'flex-start',
+    marginTop: 10,
+    marginRight: 150,
+    fontSize: 15
+
+  },
+  crr: {
+    alignItems: 'flex-start',
+    marginTop: 10,
+    marginRight: 50,
+  },
+  modal: {
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
+  },
 
 });

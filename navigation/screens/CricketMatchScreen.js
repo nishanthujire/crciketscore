@@ -26,6 +26,7 @@ export default function HomeScreen({ navigation }) {
     createTable();
    //deleteTable();
   }, []);
+  
   //teams and matches table creation 
   const createTable = () => {
 

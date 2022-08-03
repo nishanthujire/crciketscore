@@ -16,6 +16,8 @@ import PlayerDetails from './screens/PlayerDetails';
 import FirstInningsScreen from './screens/FirstInningsScreen';
 import UpdateTeam from './screens/UpdateTeam';
 import UpdatePlayer from './screens/UpdatePlayer';
+import FallOfWicket from './screens/FallOfWicket';
+import PlayerRetired from './screens/PlayerRetired';
 
 //Screen names
 const homeName = "New Match";
@@ -29,7 +31,7 @@ const Stack = createNativeStackNavigator();
 function MainContainer() {
   return (
       <Tab.Navigator
-        initialRouteName={homeName}
+        initialRouteName={HomeScreen}
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused, color, size }) => {
             let iconName;
@@ -59,6 +61,8 @@ function MainContainer() {
         <Tab.Screen options={{headerShown:false}} name={homeName} component={HomeScreen} />
         <Tab.Screen options={{headerShown:false}} name={detailsName} component={DetailsScreen} />
         <Tab.Screen options={{headerShown:false}}  name={settingsName} component={SettingsScreen} />
+     
+
 
       </Tab.Navigator>
   );
@@ -89,6 +93,10 @@ function App() {
         <Stack.Screen options={{title:'First Innings ', headerStyle: {backgroundColor: 'green', },headerTintColor: '#fff',}}name="FirstInningsScreen" component={FirstInningsScreen}/>
         <Stack.Screen options={{title:'UpdateTeam  ', headerStyle: {backgroundColor: 'green', },headerTintColor: '#fff',}}name="UpdateTeam" component={UpdateTeam}/>
         <Stack.Screen options={{title:'UpdatePlayer ', headerStyle: {backgroundColor: 'green', },headerTintColor: '#fff',}}name="UpdatePlayer" component={UpdatePlayer}/>
+        <Stack.Screen options={{title:'Fall of Wicket ', headerStyle: {backgroundColor: 'green', },headerTintColor: '#fff',}}name="FallOfWicket" component={FallOfWicket}/>
+        <Stack.Screen options={{title:'Player Retired ', headerStyle: {backgroundColor: 'green', },headerTintColor: '#fff',}}name="PlayerRetired" component={PlayerRetired}/>
+
+
 
 
 
