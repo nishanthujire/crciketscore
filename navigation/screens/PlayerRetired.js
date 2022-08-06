@@ -5,16 +5,7 @@ import { Dropdown } from 'react-native-element-dropdown';
 // import AntDesign from 'react-native-vector-iconsAntDesign';
 import { RadioButton } from 'react-native-paper';
 
-const data = [
-  { label: 'Bowled', value: 'bowled' },
-  { label: 'Catch out', value: 'catch out' },
-  { label: 'Run out striker', value: 'run out striker' },
-  { label: 'Run out non-striker', value: 'run out non-striker' },
-  { label: 'Stumping', value: 'stumping' },
-  { label: 'LBW', value: 'lbw' },
-  { label: 'Hit wicket', value: 'hit wicket' },
 
-];
 
 export default PlayerRetired = ({ route, navigation }) => {
   const [name, setName] = useState(null);
@@ -51,8 +42,8 @@ export default PlayerRetired = ({ route, navigation }) => {
       </Text>
       <TextInput
         style={styles.input}
-        placeholder=""
-        keyboardType="text"
+        placeholder="Enter Player name"
+        inp
       />
       <TouchableOpacity style={styles.button}>
         <Text style={styles.buttonText} >Done</Text>

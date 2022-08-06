@@ -9,13 +9,16 @@ const db = SQLite.openDatabase('db.cricketscoreDb') // returns Database object
 
 
 
-export default function FirstInningsScreen({ navigation }) {
+
+export default function FirstInningsScreen ({ navigation, route }) {
   const [checked, setChecked] = React.useState(false);
   const [widechecked, setWideChecked] = React.useState(false);
   const [noballchecked, setNoballChecked] = React.useState(false);
   const [byeschecked, setByesChecked] = React.useState(false);
   const [legbyeschecked, setLegbyesChecked] = React.useState(false);
   const [wicketchecked, setWicketChecked] = React.useState(false);
+
+
 
   //score hooks
   const [teamname, setTeamName] = useState('India');
@@ -71,8 +74,10 @@ export default function FirstInningsScreen({ navigation }) {
     // The user has pressed the "Delete" button, so here you can do your own logic.
     // ...Your logic
     setVisible(false);
-    //penaltyrunsclicked();
+    penaltyrunsclicked();
   };
+  //user run clicked hooks
+  const [userrunsclicked, setUserrunsClicked] = useState(0);
 
 
 
@@ -83,13 +88,16 @@ export default function FirstInningsScreen({ navigation }) {
 
 
   //global variables
-  var runs = 0, sruns = 0, bruns = 0, strikerate = 0, fourcount = 0, sixcount = 0;
+  var runs = 0, sruns = 0, bruns = 0, strikerate = 0, fourcount = 0, sixcount = 0, wicketcount = 0, tempstrikerrun = 0;
   var overs, balls, sballfaced;
   var bover = 0, bballs = 0;
   var wideruns = 1;
   var noballruns = 1, wickets = 0, maiden = 0;
   //bowler economy rare and team current run rate
   var ber, teamrr, bwicket = 0;
+  //wicket global variables
+  var out, newbatsman, outtype, support;
+
 
 
   //each over runs
@@ -103,86 +111,90 @@ export default function FirstInningsScreen({ navigation }) {
 
 
     untickcheckbox();
-    //wide
-    if (widechecked) {
+    setUserrunsClicked(0);
+    if (wicketchecked) {
+      //overs runs 
+      setTheArray(oldArray => [...oldArray, 'W']);
+      wickets = teamwickets + 1;
+      setTeamwickets(wickets);
+      //bowler wicket
+      bwicket = bowlerwickets + 1;
+      setBowlerwickets(bwicket);
+      navigation.navigate("FallOfWicket");
 
-      //team runs
-      runs = teamrun + wideruns;
-      setTeamrun(runs);
-
-      //bowler runs
-      bruns = bowlerruns + 1;
-      setBowlerruns(bruns);
-      setWideChecked(false);
-
-
-    }
-    //no ball
-    else if (noballchecked) {
-      //team runs
-      runs = teamrun + noballruns;
-      setTeamrun(runs);
-      //striker run
-      sruns = strikerrun + 0;
-      setStrikerrun(sruns);
-      //bowler runs
-      bruns = bowlerruns + 1;
-      setBowlerruns(bruns);
-
-      //stiker ball faced
-      incrementstrikerballfaced();
-      setNoballChecked(false);
 
     }
-
     else {
-      //team runs
-      runs = teamrun + 0;
-      setTeamrun(runs);
-      if (byeschecked || legbyeschecked) {
-        //batsman runs
-        sruns = strikerrun + 0;
-        setStrikerrun(sruns);
-        setByesChecked(false);
-        setLegbyesChecked(false);
+      //overs runs 
+      setTheArray(oldArray => [...oldArray, 0]);
+      //wide
+      if (widechecked) {
+
+        //team runs
+        runs = teamrun + wideruns;
+        setTeamrun(runs);
+
+        //bowler runs
+        bruns = bowlerruns + 1;
+        setBowlerruns(bruns);
+        setWideChecked(false);
 
 
       }
-      else {
-        //batsman runs
+      //no ball
+      else if (noballchecked) {
+        //team runs
+        runs = teamrun + noballruns;
+        setTeamrun(runs);
+        //striker run
         sruns = strikerrun + 0;
         setStrikerrun(sruns);
         //bowler runs
-        bruns = bowlerruns + 0;
+        bruns = bowlerruns + 1;
         setBowlerruns(bruns);
 
-
-
-      }
-
-      if (wicketchecked) {
-        //overs runs 
-        setTheArray(oldArray => [...oldArray, 'W']);
-        wickets = teamwickets + 1;
-        setTeamwickets(wickets);
-        //bowler wicket
-        bwicket = bowlerwickets + 1;
-        setBowlerwickets(bwicket);
+        //stiker ball faced
+        incrementstrikerballfaced();
+        setNoballChecked(false);
 
       }
+
       else {
-        //overs runs 
-        setTheArray(oldArray => [...oldArray, 0]);
-      }
+        //team runs
+        runs = teamrun + 0;
+        setTeamrun(runs);
+        if (byeschecked || legbyeschecked) {
+          //batsman runs
+          sruns = strikerrun + 0;
+          setStrikerrun(sruns);
+          setByesChecked(false);
+          setLegbyesChecked(false);
 
-      //overs runs
-      incrementovers();
-      //stiker ball faced
-      incrementstrikerballfaced();
-      //increment bowler overs
-      incrementbowlerovers();
-      //calculate strike rate of striker batsman
-      //calculateStrikerate(strikerrun,strikerballfaced);
+
+        }
+        else {
+          //batsman runs
+          sruns = strikerrun + 0;
+          setStrikerrun(sruns);
+          //bowler runs
+          bruns = bowlerruns + 0;
+          setBowlerruns(bruns);
+
+
+
+        }
+
+
+
+        //overs runs
+        incrementovers();
+        //stiker ball faced
+        incrementstrikerballfaced();
+        //increment bowler overs
+        incrementbowlerovers();
+        //calculate strike rate of striker batsman
+        //calculateStrikerate(strikerrun,strikerballfaced);
+      }
     }
 
 
@@ -195,6 +207,8 @@ export default function FirstInningsScreen({ navigation }) {
 
   };
   const oneClicked = () => {
+    untickcheckbox();
+    setUserrunsClicked(1);
     if (wicketchecked) {
       //overs runs 
       setTheArray(oldArray => [...oldArray, 'W']);
@@ -203,88 +217,93 @@ export default function FirstInningsScreen({ navigation }) {
       //bowler wicket
       bwicket = bowlerwickets + 1;
       setBowlerwickets(bwicket);
+      navigation.navigate("FallOfWicket");
     }
     else {
       //overs runs 
       //over runs
       setTheArray(oldArray => [...oldArray, 1]);
-    }
+      //wide
+      if (widechecked) {
+        //team runs
+        runs = teamrun + wideruns + 1;
+        setTeamrun(runs);
+
+        //bowler runs
+        bruns = bowlerruns + wideruns + 1;
+        setBowlerruns(bruns);
+
+        setWideChecked(false);
 
 
-
-    untickcheckbox();
-    //wide
-    if (widechecked) {
-      //team runs
-      runs = teamrun + wideruns + 1;
-      setTeamrun(runs);
-
-      //bowler runs
-      bruns = bowlerruns + wideruns + 1;
-      setBowlerruns(bruns);
-
-      setWideChecked(false);
-
-
-    }
-    //no ball
-    else if (noballchecked) {
-      //team runs
-      runs = teamrun + noballruns + 1;
-      setTeamrun(runs);
-      //striker run
-      sruns = strikerrun + 1;
-      setStrikerrun(sruns);
-      //bowler runs
-      bruns = bowlerruns + 1 + noballruns;
-      setBowlerruns(bruns);
-
-      //stiker ball faced
-      incrementstrikerballfaced();
-      //changing crease for odd runs
-      changecrease();
-
-      setNoballChecked(false);
-
-    }
-    else {
-      runs = teamrun + 1;
-      setTeamrun(runs);
-      //byes
-      if (byeschecked || legbyeschecked) {
-        //batsman runs
-        sruns = strikerrun;
+      }
+      //no ball
+      else if (noballchecked) {
+        //team runs
+        runs = teamrun + noballruns + 1;
+        setTeamrun(runs);
+        //striker run
+        sruns = strikerrun + 1;
         setStrikerrun(sruns);
-        setByesChecked(false);
-        setLegbyesChecked(false);
+        //bowler runs
+        bruns = bowlerruns + 1 + noballruns;
+        setBowlerruns(bruns);
+
+        //stiker ball faced
+        incrementstrikerballfaced();
+        //changing crease for odd runs
+        changecrease();
+
+        setNoballChecked(false);
 
       }
       else {
-        sruns = strikerrun + 1;
-        setStrikerrun(sruns);
+        runs = teamrun + 1;
+        setTeamrun(runs);
+        //byes
+        if (byeschecked || legbyeschecked) {
+          //batsman runs
+          sruns = strikerrun;
+          setStrikerrun(sruns);
+          setByesChecked(false);
+          setLegbyesChecked(false);
 
-        //bowler runs
-        bruns = bowlerruns + 1;
-        setBowlerruns(bruns);
+        }
+        else {
+          sruns = strikerrun + 1;
+          setStrikerrun(sruns);
+
+          //bowler runs
+          bruns = bowlerruns + 1;
+          setBowlerruns(bruns);
 
 
+        }
+
+
+
+
+
+        incrementovers();
+        incrementstrikerballfaced();
+        incrementbowlerovers();
+        //changing crease for odd runs
+        changecrease();
       }
 
-
-
-
-
-      incrementovers();
-      incrementstrikerballfaced();
-      incrementbowlerovers();
-      //changing crease for odd runs
-      changecrease();
     }
+
+
+
+
+
 
 
 
   };
   const twoClicked = () => {
+    untickcheckbox();
+    setUserrunsClicked(2)
     if (wicketchecked) {
       //overs runs 
       setTheArray(oldArray => [...oldArray, 'W']);
@@ -293,80 +312,84 @@ export default function FirstInningsScreen({ navigation }) {
       //bowler wicket
       bwicket = bowlerwickets + 1;
       setBowlerwickets(bwicket);
+      navigation.navigate("FallOfWicket");
     }
     else {
       //overs runs 
       //over runs
       setTheArray(oldArray => [...oldArray, 2]);
-    }
+      //wide
+      if (widechecked) {
+        //team runs
+        runs = teamrun + wideruns + 2;
+        setTeamrun(runs);
+
+        //bowler runs
+        bruns = bowlerruns + wideruns + 2;
+        setBowlerruns(bruns);
+
+        setWideChecked(false);
 
 
-    untickcheckbox();
-    //wide
-    if (widechecked) {
-      //team runs
-      runs = teamrun + wideruns + 2;
-      setTeamrun(runs);
-
-      //bowler runs
-      bruns = bowlerruns + wideruns + 2;
-      setBowlerruns(bruns);
-
-      setWideChecked(false);
-
-
-    }
-    //no ball
-    else if (noballchecked) {
-      //team runs
-      runs = teamrun + noballruns + 2;
-      setTeamrun(runs);
-      //striker run
-      sruns = strikerrun + 2;
-      setStrikerrun(sruns);
-      //bowler runs
-      bruns = bowlerruns + 2 + noballruns;
-      setBowlerruns(bruns);
-
-      //stiker ball faced
-      incrementstrikerballfaced();
-      //changing crease for odd runs
-
-
-      setNoballChecked(false);
-
-    }
-    else {
-      runs = teamrun + 2;
-      setTeamrun(runs);
-
-
-      if (byeschecked || legbyeschecked) {
-        //batsman runs
-        sruns = strikerrun;
+      }
+      //no ball
+      else if (noballchecked) {
+        //team runs
+        runs = teamrun + noballruns + 2;
+        setTeamrun(runs);
+        //striker run
+        sruns = strikerrun + 2;
         setStrikerrun(sruns);
-        setByesChecked(false);
-        setLegbyesChecked(false);
+        //bowler runs
+        bruns = bowlerruns + 2 + noballruns;
+        setBowlerruns(bruns);
+
+        //stiker ball faced
+        incrementstrikerballfaced();
+        //changing crease for odd runs
+
+
+        setNoballChecked(false);
 
       }
       else {
-        sruns = strikerrun + 2;
-        setStrikerrun(sruns);
+        runs = teamrun + 2;
+        setTeamrun(runs);
 
-        //bowler runs
-        bruns = bowlerruns + 2;
-        setBowlerruns(bruns);
 
+        if (byeschecked || legbyeschecked) {
+          //batsman runs
+          sruns = strikerrun;
+          setStrikerrun(sruns);
+          setByesChecked(false);
+          setLegbyesChecked(false);
+
+        }
+        else {
+          sruns = strikerrun + 2;
+          setStrikerrun(sruns);
+
+          //bowler runs
+          bruns = bowlerruns + 2;
+          setBowlerruns(bruns);
+
+        }
+
+
+
+        incrementovers();
+        incrementstrikerballfaced();
+        incrementbowlerovers();
       }
-
-
-
-      incrementovers();
-      incrementstrikerballfaced();
-      incrementbowlerovers();
     }
+
+
+
+
   };
   const threeClicked = () => {
+    untickcheckbox();
+    setUserrunsClicked(3);
     if (wicketchecked) {
       //overs runs 
       setTheArray(oldArray => [...oldArray, 'W']);
@@ -375,85 +398,90 @@ export default function FirstInningsScreen({ navigation }) {
       //bowler wicket
       bwicket = bowlerwickets + 1;
       setBowlerwickets(bwicket);
+      navigation.navigate("FallOfWicket");
+
     }
     else {
       //overs runs 
       //over runs
       setTheArray(oldArray => [...oldArray, 3]);
-    }
+      //wide
+      if (widechecked) {
+        //team runs
+        runs = teamrun + wideruns + 3;
+        setTeamrun(runs);
 
-    untickcheckbox();
-    //wide
-    if (widechecked) {
-      //team runs
-      runs = teamrun + wideruns + 3;
-      setTeamrun(runs);
+        //bowler runs
+        bruns = bowlerruns + wideruns + 3;
+        setBowlerruns(bruns);
 
-      //bowler runs
-      bruns = bowlerruns + wideruns + 3;
-      setBowlerruns(bruns);
-
-      setWideChecked(false);
+        setWideChecked(false);
 
 
-    }
-    //no ball
-    else if (noballchecked) {
-      //team runs
-      runs = teamrun + noballruns + 3;
-      setTeamrun(runs);
+      }
+      //no ball
+      else if (noballchecked) {
+        //team runs
+        runs = teamrun + noballruns + 3;
+        setTeamrun(runs);
 
-      //striker run
-      sruns = strikerrun + 3;
-      setStrikerrun(sruns);
-      //bowler runs
-      bruns = bowlerruns + 3 + noballruns;
-      setBowlerruns(bruns);
-
-      //stiker ball faced
-      incrementstrikerballfaced();
-      //changing crease for odd runs
-      changecrease();
-
-      setNoballChecked(false)
-        ;
-
-    }
-    else {
-      runs = teamrun + 3;
-      setTeamrun(runs);
-
-      if (byeschecked || legbyeschecked) {
-        //batsman runs
-        sruns = strikerrun;
+        //striker run
+        sruns = strikerrun + 3;
         setStrikerrun(sruns);
-        setByesChecked(false);
-        setLegbyesChecked(false);
+        //bowler runs
+        bruns = bowlerruns + 3 + noballruns;
+        setBowlerruns(bruns);
+
+        //stiker ball faced
+        incrementstrikerballfaced();
+        //changing crease for odd runs
+        changecrease();
+
+        setNoballChecked(false)
+          ;
 
       }
       else {
-        sruns = strikerrun + 3;
-        setStrikerrun(sruns);
+        runs = teamrun + 3;
+        setTeamrun(runs);
 
-        //bowler runs
-        bruns = bowlerruns + 3;
-        setBowlerruns(bruns);
+        if (byeschecked || legbyeschecked) {
+          //batsman runs
+          sruns = strikerrun;
+          setStrikerrun(sruns);
+          setByesChecked(false);
+          setLegbyesChecked(false);
 
+        }
+        else {
+          sruns = strikerrun + 3;
+          setStrikerrun(sruns);
+
+          //bowler runs
+          bruns = bowlerruns + 3;
+          setBowlerruns(bruns);
+
+        }
+
+
+
+
+
+        incrementovers();
+        incrementstrikerballfaced();
+        incrementbowlerovers();
+
+        //changing crease for odd runs
+        changecrease();
       }
-
-
-
-
-
-      incrementovers();
-      incrementstrikerballfaced();
-      incrementbowlerovers();
-
-      //changing crease for odd runs
-      changecrease();
     }
+
+
+
   };
   const fourClicked = () => {
+    untickcheckbox();
+    setUserrunsClicked(4);
     if (wicketchecked) {
       //overs runs 
       setTheArray(oldArray => [...oldArray, 'W']);
@@ -462,86 +490,90 @@ export default function FirstInningsScreen({ navigation }) {
       //bowler wicket
       bwicket = bowlerwickets + 1;
       setBowlerwickets(bwicket);
+      navigation.navigate("FallOfWicket");
     }
     else {
-      //overs runs 
-      //over runs
-      setTheArray(oldArray => [...oldArray, 4]);
+        //overs runs 
+        //over runs
+        setTheArray(oldArray => [...oldArray, 4]);
+        //wide
+        if (widechecked) {
+          //team runs
+          runs = teamrun + wideruns + 4;
+          setTeamrun(runs);
+
+          //bowler runs
+          bruns = bowlerruns + wideruns + 4;
+          setBowlerruns(bruns);
+
+          setWideChecked(false);
+
+
+        }
+        //no ball
+        else if (noballchecked) {
+          //team runs
+          runs = teamrun + noballruns + 4;
+          setTeamrun(runs);
+          //striker run
+          sruns = strikerrun + 4;
+          setStrikerrun(sruns);
+          //bowler runs
+          bruns = bowlerruns + 4 + noballruns;
+          setBowlerruns(bruns);
+
+          //stiker ball faced
+          incrementstrikerballfaced();
+
+
+          fourcount = strikerfourcount + 1;
+          setStrikefourcount(fourcount);
+
+
+
+          setNoballChecked(false);
+
+        }
+        else {
+          runs = teamrun + 4;
+          setTeamrun(runs);
+            if (byeschecked || legbyeschecked) {
+              //batsman runs
+              sruns = strikerrun;
+              setStrikerrun(sruns);
+              setByesChecked(false);
+              setLegbyesChecked(false);
+
+            }
+            else {
+              sruns = strikerrun + 4;
+              setStrikerrun(sruns);
+              fourcount = strikerfourcount + 1;
+              setStrikefourcount(fourcount);
+
+              //bowler runs
+              bruns = bowlerruns + 4;
+              setBowlerruns(bruns);
+
+
+            }
+
+
+
+
+          incrementovers();
+          incrementstrikerballfaced();
+          incrementbowlerovers();
+        }
     }
 
-    untickcheckbox();
-    //wide
-    if (widechecked) {
-      //team runs
-      runs = teamrun + wideruns + 4;
-      setTeamrun(runs);
-
-      //bowler runs
-      bruns = bowlerruns + wideruns + 4;
-      setBowlerruns(bruns);
-
-      setWideChecked(false);
 
 
-    }
-    //no ball
-    else if (noballchecked) {
-      //team runs
-      runs = teamrun + noballruns + 4;
-      setTeamrun(runs);
-      //striker run
-      sruns = strikerrun + 4;
-      setStrikerrun(sruns);
-      //bowler runs
-      bruns = bowlerruns + 4 + noballruns;
-      setBowlerruns(bruns);
-
-      //stiker ball faced
-      incrementstrikerballfaced();
-
-
-      fourcount = strikerfourcount + 1;
-      setStrikefourcount(fourcount);
-
-
-
-      setNoballChecked(false);
-
-    }
-    else {
-      runs = teamrun + 4;
-      setTeamrun(runs);
-      if (byeschecked || legbyeschecked) {
-        //batsman runs
-        sruns = strikerrun;
-        setStrikerrun(sruns);
-        setByesChecked(false);
-        setLegbyesChecked(false);
-
-      }
-      else {
-        sruns = strikerrun + 4;
-        setStrikerrun(sruns);
-        fourcount = strikerfourcount + 1;
-        setStrikefourcount(fourcount);
-
-        //bowler runs
-        bruns = bowlerruns + 4;
-        setBowlerruns(bruns);
-
-
-      }
-
-
-
-
-      incrementovers();
-      incrementstrikerballfaced();
-      incrementbowlerovers();
-    }
 
   };
   const fiveClicked = () => {
+    untickcheckbox();
+    setUserrunsClicked(5);
     if (wicketchecked) {
       //overs runs 
       setTheArray(oldArray => [...oldArray, 'W']);
@@ -550,84 +582,89 @@ export default function FirstInningsScreen({ navigation }) {
       //bowler wicket
       bwicket = bowlerwickets + 1;
       setBowlerwickets(bwicket);
-    }
-    else {
-      //overs runs 
-      //over runs
-      setTheArray(oldArray => [...oldArray, 5]);
-    }
-
-    untickcheckbox();
-    //wide
-    if (widechecked) {
-      //team runs
-      runs = teamrun + wideruns + 5;
-      setTeamrun(runs);
-
-      //bowler runs
-      bruns = bowlerruns + wideruns + 5;
-      setBowlerruns(bruns);
-
-      setWideChecked(false);
-
-
-    }
-    //no ball
-    else if (noballchecked) {
-      //team runs
-      runs = teamrun + noballruns + 5;
-      setTeamrun(runs);
-      //striker run
-      sruns = strikerrun + 5;
-      setStrikerrun(sruns);
-      //bowler runs
-      bruns = bowlerruns + 5 + noballruns;
-      setBowlerruns(bruns);
-
-      //stiker ball faced
-      incrementstrikerballfaced();
-      //changing crease for odd runs
-      changecrease();
-
-      setNoballChecked(false);
+      navigation.navigate("FallOfWicket");
 
     }
     else {
-      runs = teamrun + 5;
-      setTeamrun(runs);
+          //overs runs 
+          //over runs
+          setTheArray(oldArray => [...oldArray, 5]);
+          //wide
+        if (widechecked) {
+          //team runs
+          runs = teamrun + wideruns + 5;
+          setTeamrun(runs);
 
-      if (byeschecked || legbyeschecked) {
-        //batsman runs
-        sruns = strikerrun;
-        setStrikerrun(sruns);
-        setByesChecked(false);
-        setLegbyesChecked(false);
+          //bowler runs
+          bruns = bowlerruns + wideruns + 5;
+          setBowlerruns(bruns);
 
+          setWideChecked(false);
+
+
+        }
+        //no ball
+        else if (noballchecked) {
+          //team runs
+          runs = teamrun + noballruns + 5;
+          setTeamrun(runs);
+          //striker run
+          sruns = strikerrun + 5;
+          setStrikerrun(sruns);
+          //bowler runs
+          bruns = bowlerruns + 5 + noballruns;
+          setBowlerruns(bruns);
+
+          //stiker ball faced
+          incrementstrikerballfaced();
+          //changing crease for odd runs
+          changecrease();
+
+          setNoballChecked(false);
+
+        }
+        else {
+          runs = teamrun + 5;
+          setTeamrun(runs);
+
+            if (byeschecked || legbyeschecked) {
+              //batsman runs
+              sruns = strikerrun;
+              setStrikerrun(sruns);
+              setByesChecked(false);
+              setLegbyesChecked(false);
+
+            }
+            else {
+              sruns = strikerrun + 5;
+              setStrikerrun(sruns);
+
+              //bowler runs
+              bruns = bowlerruns + 5;
+              setBowlerruns(bruns);
+
+            }
+
+
+
+
+
+          incrementovers();
+          incrementstrikerballfaced();
+          incrementbowlerovers();
+
+          //changing crease for odd runs
+          changecrease();
+        }
       }
-      else {
-        sruns = strikerrun + 5;
-        setStrikerrun(sruns);
 
-        //bowler runs
-        bruns = bowlerruns + 5;
-        setBowlerruns(bruns);
-
-      }
-
-
-
-
-
-      incrementovers();
-      incrementstrikerballfaced();
-      incrementbowlerovers();
-
-      //changing crease for odd runs
-      changecrease();
-    }
+   
+    
 
   };
   const sixClicked = () => {
+    untickcheckbox();
+    setUserrunsClicked(6);
     if (wicketchecked) {
       //overs runs 
       setTheArray(oldArray => [...oldArray, 'W']);
@@ -636,89 +673,108 @@ export default function FirstInningsScreen({ navigation }) {
       //bowler wicket
       bwicket = bowlerwickets + 1;
       setBowlerwickets(bwicket);
+      navigation.navigate("FallOfWicket");
     }
     else {
-      //overs runs 
-      //over runs
-      setTheArray(oldArray => [...oldArray, 6]);
-    }
+        //overs runs 
+        //over runs
+        setTheArray(oldArray => [...oldArray, 6]);
+        //wide
+      if (widechecked) {
+        //team runs
+        runs = teamrun + wideruns + 6;
+        setTeamrun(runs);
 
-    untickcheckbox();
-    //wide
-    if (widechecked) {
-      //team runs
-      runs = teamrun + wideruns + 6;
-      setTeamrun(runs);
+        //bowler runs
+        bruns = bowlerruns + wideruns + 6;
+        setBowlerruns(bruns);
 
-      //bowler runs
-      bruns = bowlerruns + wideruns + 6;
-      setBowlerruns(bruns);
+        setWideChecked(false);
 
-      setWideChecked(false);
-
-
-    }
-    //no ball
-    else if (noballchecked) {
-      //team runs
-      runs = teamrun + noballruns + 6;
-      setTeamrun(runs);
-      //striker run
-      sruns = strikerrun + 6;
-      setStrikerrun(sruns);
-      //bowler runs
-      bruns = bowlerruns + 6 + noballruns;
-      setBowlerruns(bruns);
-
-      //stiker ball faced
-      incrementstrikerballfaced();
-      //changing crease for odd runs
-
-
-      sixcount = strikersixcount + 1;
-      setStrikesixcount(sixcount);
-
-
-      setNoballChecked(false);
-
-    }
-    else {
-
-      runs = teamrun + 6;
-      setTeamrun(runs);
-
-      if (byeschecked || legbyeschecked) {
-        //batsman runs
-        sruns = strikerrun;
-        setStrikerrun(sruns);
-        setByesChecked(false);
-        setLegbyesChecked(false);
 
       }
-      else {
-
+      //no ball
+      else if (noballchecked) {
+        //team runs
+        runs = teamrun + noballruns + 6;
+        setTeamrun(runs);
+        //striker run
         sruns = strikerrun + 6;
         setStrikerrun(sruns);
+        //bowler runs
+        bruns = bowlerruns + 6 + noballruns;
+        setBowlerruns(bruns);
+
+        //stiker ball faced
+        incrementstrikerballfaced();
+        //changing crease for odd runs
+
 
         sixcount = strikersixcount + 1;
         setStrikesixcount(sixcount);
 
-        //bowler runs
-        bruns = bowlerruns + 6;
-        setBowlerruns(bruns);
 
+        setNoballChecked(false);
 
       }
+      else {
+
+        runs = teamrun + 6;
+        setTeamrun(runs);
+
+          if (byeschecked || legbyeschecked) {
+            //batsman runs
+            sruns = strikerrun;
+            setStrikerrun(sruns);
+            setByesChecked(false);
+            setLegbyesChecked(false);
+
+          }
+          else {
+
+            sruns = strikerrun + 6;
+            setStrikerrun(sruns);
+
+            sixcount = strikersixcount + 1;
+            setStrikesixcount(sixcount);
+
+            //bowler runs
+            bruns = bowlerruns + 6;
+            setBowlerruns(bruns);
+
+
+          }
 
 
 
 
-      incrementovers();
-      incrementstrikerballfaced();
-      incrementbowlerovers();
+        incrementovers();
+        incrementstrikerballfaced();
+        incrementbowlerovers();
+      }
     }
 
+    
+    
+
   };
+  //penalty runs
+  const penaltyrunsclicked = () => {
+    if (!penaltyrun) {
+
+    }
+    var p = Number(penaltyrun);
+    //console.log(typeof(penaltyrun));
+    runs = teamrun + p;
+    setTeamrun(runs);
+
+    //bowler runs
+    bruns = bowlerruns + p;
+    setBowlerruns(bruns);
+    //changing penalty runs to zero
+    setPenaltyruns(0);
+
+  }
 
 
 
@@ -767,7 +823,7 @@ export default function FirstInningsScreen({ navigation }) {
       setBowlerover(bover);
 
 
-      strikerdatainsert();
+      BowlerDatainsert();
     }
     setBowleballs(bballs);
 
@@ -888,6 +944,27 @@ export default function FirstInningsScreen({ navigation }) {
     //deleteTable();
   }, []);
 
+  //use effect hook to fetch news batmsan and out value
+  //getting data from pervious screen
+  useEffect(() => {
+
+    if (route.params?.newbatsman && route.params?.out && route.params?.outtype) {
+      if (route.params?.support) {
+        support = route.params?.support;
+        console.log('support  is  : ', support)
+      }
+      newbatsman = route.params?.newbatsman;
+      console.log("new batsman : ", newbatsman);
+      out = route.params?.out;
+      console.log(out, " is out");
+      outtype = route.params?.outtype;
+      console.log("output type ", outtype);
+      Runoutrunincrement();
+
+    }
+
+  }, [route.params?.newbatsman, route.params?.out, route.params?.outtype]);
+
   //batting and bowling,wickets table creation 
   const createTable3 = () => {
 
@@ -906,9 +983,36 @@ export default function FirstInningsScreen({ navigation }) {
 
 
   }
+  //run out run increment function
+  const Runoutrunincrement = () => {
+    if (outtype === "run out striker" || outtype === "run out non-striker") {
+      runs = teamrun + userrunsclicked;
+      setTeamrun(runs);
+      sruns = strikerrun + userrunsclicked;
+      setStrikerrun(sruns);
 
-  //striker data insertion
-  const strikerdatainsert = () => {
+      //bowler runs
+      bruns = bowlerruns + userrunsclicked;
+      setBowlerruns(bruns);
+    }
+    incrementovers();
+    incrementstrikerballfaced();
+    incrementbowlerovers();
+    //storing data
+    BatsmanDatainsert();
+
+
+
+  };
+
+  //storing batsman data when wickets falls
+  const BatsmanDatainsert = () => {
+    //getting latest value of strikerrun
+    setStrikerrun((state) => {
+      tempstrikerrun = state;
+      return state;
+    });
+
     //getting latest value of four count
     setStrikefourcount((state) => {
       fourcount = state;
@@ -919,50 +1023,82 @@ export default function FirstInningsScreen({ navigation }) {
       sixcount = state;
       return state;
     });
-    //inserting striker data
-    db.transaction(tx => {
-      tx.executeSql('INSERT INTO batting (match_id,teamname,innings,batsman_name,run,ball,six,four,strikerate) values (?,?,?,?,?,?,?,?,?)', [1, teamname, 1, strikername, sruns, sballfaced, sixcount, fourcount, strikerate],
-        (tx, results) => {
+    // if striker is out insert striker data
+    if (out === "striker") {
 
-          console.log('Results', results.rowsAffected);
-          if (results.rowsAffected > 0) {
-            console.log('inserted striker data 1');
-            alert('inserted striker data 1');
-          }
-        },
-        (tx, error) => console.log('Error', error))
+      db.transaction(tx => {
+        tx.executeSql('INSERT INTO batting (match_id,teamname,innings,batsman_name,run,ball,six,four,strikerate,out_type,support,bowler) values (?,?,?,?,?,?,?,?,?,?,?,?)', [1, teamname, 1, strikername, tempstrikerrun, strikerballfaced, sixcount, fourcount, strikersrate, outtype, support, bowlername],
+          (tx, results) => {
+
+            console.log('Results', results.rowsAffected);
+            if (results.rowsAffected > 0) {
+              console.log('inserted striker data');
+              //alert('inserted striker data');
+
+              //reseting all the striker data values
+              setStrikername(newbatsman);
+              setStrikerrun(0);
+              setStrikerballfaced(0);
+              setStrikefourcount(0);
+              setStrikesixcount(0);
+              setStrikesrate(0);
+
+            }
+          },
+          (tx, error) => console.log('Error', error))
+      });
+    }
+
+    // if non-striker is out insert striker data
+    else if (out === "nonstriker") {
+      //inserting non-striker data
+      db.transaction(tx => {
+        tx.executeSql('INSERT INTO batting (match_id,teamname,innings,batsman_name,run,ball,six,four,strikerate,out_type,support,bowler) values (?,?,?,?,?,?,?,?,?,?,?,?)', [1, teamname, 1, nonstrikername, nonstrikerrun, nonstrikerballfaced, nonstrikersixcount, nonstrikerfourcount, nonstrikersrate, outtype, support, bowlername],
+          (tx, results) => {
+
+            console.log('Results', results.rowsAffected);
+            if (results.rowsAffected > 0) {
+              console.log('inserted non-striker data ');
+              //alert('inserted non-striker data ');
+
+              //reseting non-striker data
+              setNonstrikername(newbatsman);
+              setNonstrikerrun(0);
+              setNonstrikerballfaced(0);
+              setNonstrikefourcount(0);
+              setNonstrikesixcount(0);
+              setnonstrikesrate(0);
+            }
+          },
+          (tx, error) => console.log('Error', error))
+      });
+    }
+
+  }
+
+
+  //storing bowler data after each over 
+  const BowlerDatainsert = () => {
+    //console.log("bowler wicket is ",bwicket);
+    //getting bowler wicker latest value
+
+    setBowlerwickets((state) => {
+      wicketcount = state;
+      return state;
     });
-    //inserting non-striker data
-    db.transaction(tx => {
-      tx.executeSql('INSERT INTO batting (match_id,teamname,innings,batsman_name,run,ball,six,four,strikerate) values (?,?,?,?,?,?,?,?,?)', [1, teamname, 1, nonstrikername, nonstrikerrun, nonstrikerballfaced, nonstrikersixcount, nonstrikerfourcount, nonstrikersrate],
-        (tx, results) => {
-
-          console.log('Results', results.rowsAffected);
-          if (results.rowsAffected > 0) {
-            console.log('inserted striker data 2');
-            //alert('inserted striker data 1');
-          }
-        },
-        (tx, error) => console.log('Error', error))
-    });
-
     //inserting bowler data
     db.transaction(tx => {
-      tx.executeSql('INSERT INTO bowling (match_id,teamname,innings,bowler_name,over,maiden,bowler_run,wickets,economy) values (?,?,?,?,?,?,?,?,?)', [1, teamname, 1, bowlername, bover, bowlermaiden, bruns, bwicket, ber],
+      tx.executeSql('INSERT INTO bowling (match_id,teamname,innings,bowler_name,over,maiden,bowler_run,wickets,economy) values (?,?,?,?,?,?,?,?,?)', [1, teamname, 1, "nishanth", bover, bowlermaiden, bruns, wicketcount, ber],
         (tx, results) => {
 
           console.log('Results', results.rowsAffected);
           if (results.rowsAffected > 0) {
-            console.log('inserted bowler data 1');
+            console.log('inserted bowler data ');
 
           }
         },
         (tx, error) => console.log('Error', error))
     });
-
-
-
-
   }
 
   const go = () => {
@@ -1001,7 +1137,7 @@ export default function FirstInningsScreen({ navigation }) {
           <Dialog.Container visible={visible}>
             <Dialog.Title style={{ fontWeight: 'bold' }}>End of the First inning ?</Dialog.Title>
             <Dialog.Description style={{ color: 'green', fontSize: 15 }}>Scored runs(including overthrows)?</Dialog.Description>
-            <Dialog.Input label=" " style={{ marginTop: -20 }} onChangeText={(value) => setPenaltyruns(value)}>0</Dialog.Input>
+            <Dialog.Input label=" " style={{ marginTop: -20 }} onChangeText={(value) => setPenaltyruns(value)} keyboardType="numeric" maxLength={1}></Dialog.Input>
             <Dialog.Button label="Cancel" onPress={handleCancel} />
             <Dialog.Button label="Ok" onPress={handleOK} />
           </Dialog.Container>
@@ -1203,85 +1339,86 @@ export default function FirstInningsScreen({ navigation }) {
                   })}
 
               >Retire</Button>
-            <Button
+              <Button
 
-              style={styles.Checkbutton}
-              color="#fff"
+                style={styles.Checkbutton}
+                color="#fff"
 
-              onPress={swap}
-            >Swap </Button>
-          </View>
-          {/* </View> */}
-        </View>
-        <View>
-          <View style={styles.ScoreContainer}>
-            <View style={styles.Scorelist}>
-              <TouchableOpacity onPress={zeroClicked}>
-                <View style={styles.Scorecircle} >
-
-                  <Text style={styles.textscore}>0</Text>
-
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={oneClicked}>
-                <View style={styles.Scorecircle} >
-
-                  <Text style={styles.textscore}>1</Text>
-
-                </View>
-              </TouchableOpacity >
-              <TouchableOpacity onPress={twoClicked}>
-                <View style={styles.Scorecircle} >
-
-                  <Text style={styles.textscore}>2</Text>
-
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={threeClicked}>
-                <View style={styles.Scorecircle} >
-
-                  <Text style={styles.textscore}>3</Text>
-
-                </View>
-              </TouchableOpacity>
+                onPress={swap}
+              >Swap </Button>
             </View>
-            <View style={styles.Scorelist}>
-              <TouchableOpacity onPress={fourClicked} >
-                <View style={styles.Scorecircle} >
+            {/* </View> */}
+          </View>
+          <View>
+            <View style={styles.ScoreContainer}>
+              <View style={styles.Scorelist}>
+                <TouchableOpacity onPress={zeroClicked}>
+                  <View style={styles.Scorecircle} >
 
-                  <Text style={styles.textscore}>4</Text>
+                    <Text style={styles.textscore}>0</Text>
 
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={fiveClicked}>
-                <View style={styles.Scorecircle} >
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={oneClicked}>
+                  <View style={styles.Scorecircle} >
 
-                  <Text style={styles.textscore}>5</Text>
+                    <Text style={styles.textscore}>1</Text>
 
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={sixClicked}>
-                <View style={styles.Scorecircle} >
+                  </View>
+                </TouchableOpacity >
+                <TouchableOpacity onPress={twoClicked}>
+                  <View style={styles.Scorecircle} >
 
-                  <Text style={styles.textscore}>6</Text>
+                    <Text style={styles.textscore}>2</Text>
 
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity>
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={threeClicked}>
+                  <View style={styles.Scorecircle} >
 
-                <View style={styles.Scorecircle}  >
-                  <TouchableOpacity //</View>onPress={go}
-                    onPress={showDialog}>
-                    <Text style={styles.textscore} >...</Text>
-                  </TouchableOpacity>
-                </View>
-              </TouchableOpacity>
+                    <Text style={styles.textscore}>3</Text>
+
+                  </View>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.Scorelist}>
+                <TouchableOpacity onPress={fourClicked} >
+                  <View style={styles.Scorecircle} >
+
+                    <Text style={styles.textscore}>4</Text>
+
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={fiveClicked}>
+                  <View style={styles.Scorecircle} >
+
+                    <Text style={styles.textscore}>5</Text>
+
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={sixClicked}>
+                  <View style={styles.Scorecircle} >
+
+                    <Text style={styles.textscore}>6</Text>
+
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity>
+
+                  <View style={styles.Scorecircle}  >
+                    <TouchableOpacity onPress={go}
+                    //</View>onPress={showDialog}
+                    >
+                      <Text style={styles.textscore} >...</Text>
+                    </TouchableOpacity>
+                  </View>
+                </TouchableOpacity>
+              </View>
             </View>
+
           </View>
 
         </View>
-
-    </View>
       </ScrollView >
     </View >
   );
