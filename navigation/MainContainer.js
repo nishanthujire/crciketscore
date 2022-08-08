@@ -18,6 +18,11 @@ import UpdateTeam from './screens/UpdateTeam';
 import UpdatePlayer from './screens/UpdatePlayer';
 import FallOfWicket from './screens/FallOfWicket';
 import PlayerRetired from './screens/PlayerRetired';
+import SelectNewBowler from './screens/SelectNewBowler';
+import SecondInnings from './screens/SecondInnings';
+import PlayerRetired2 from './screens/PlayerRetired2';
+import SelectNewBowler2 from './screens/SelectNewBowler2';
+import FallOfWicket2 from './screens/FallOfWicket2';
 
 //Screen names
 const homeName = "New Match";
@@ -95,6 +100,12 @@ function App() {
         <Stack.Screen options={{title:'UpdatePlayer ', headerStyle: {backgroundColor: 'green', },headerTintColor: '#fff',}}name="UpdatePlayer" component={UpdatePlayer}/>
         <Stack.Screen options={{title:'Fall of Wicket ', headerStyle: {backgroundColor: 'green', },headerTintColor: '#fff',}}name="FallOfWicket" component={FallOfWicket}/>
         <Stack.Screen options={{title:'Player Retired ', headerStyle: {backgroundColor: 'green', },headerTintColor: '#fff',}}name="PlayerRetired" component={PlayerRetired}/>
+        <Stack.Screen options={{title:'Select new Bowler ', headerStyle: {backgroundColor: 'green', },headerTintColor: '#fff',}}name="SelectNewBowler" component={SelectNewBowler}/>
+        <Stack.Screen options={{title:'Fall of Wicket ', headerStyle: {backgroundColor: 'green', },headerTintColor: '#fff',}}name="FallOfWicket2" component={FallOfWicket2}/>
+        <Stack.Screen options={{title:'Player Retired ', headerStyle: {backgroundColor: 'green', },headerTintColor: '#fff',}}name="PlayerRetired2" component={PlayerRetired2}/>
+        <Stack.Screen options={{title:'Select new Bowler ', headerStyle: {backgroundColor: 'green', },headerTintColor: '#fff',}}name="SelectNewBowler2" component={SelectNewBowler2}/>
+        <Stack.Screen options={{title:'Second Innings', headerStyle: {backgroundColor: 'green', },headerTintColor: '#fff',}}name="SecondInnings" component={SecondInnings}/>
+
 
 
 

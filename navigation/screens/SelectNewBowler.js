@@ -1,59 +1,40 @@
 import { setStatusBarHidden } from 'expo-status-bar';
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Button } from 'react-native';
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Button, Alert } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
 // import AntDesign from 'react-native-vector-iconsAntDesign';
 import { RadioButton } from 'react-native-paper';
 
 
 
-export default PlayerRetired = ({ route, navigation }) => {
-  const [name, setName] = useState(null);
-  const[choice, setChoice] = useState("a");
-  var val;
-  //getting batting & bowling teams data
-  const strikername = route.params.striker;
-  console.log("striker : ", strikername);
-  const nonstrikername = route.params.nonstriker;
-  console.log("non striker :", nonstrikername);
+export default SelectNewBowler = ({ route, navigation }) => {
+  const [bowler, setbowler] = useState(null);
 
 
   return (
     <View style={styles.container}>
       <Text style={styles.titleText}>
-        Select player to retire
-      </Text>
-
-      <RadioButton.Group onValueChange={newValue => setChoice(newValue)} value={choice} >
-        <View style={styles.radiobutton}>
-
-          <RadioButton color='green' value={strikername} />
-          <Text style={{ marginTop: 7 }}>{strikername}</Text>
-        </View>
-        <View style={{ flexDirection: 'row', }}>
-
-          <RadioButton color='green' value={nonstrikername} />
-          <Text style={{ marginTop: 7 }}>{nonstrikername}</Text>
-        </View>
-      </RadioButton.Group>
-
-      <Text style={styles.sectitleText}>
-        Replaced by?
+        Select a new bowler
       </Text>
       <TextInput
         style={styles.input}
-        placeholder="Enter Player name"
-        onChangeText={(value) => setName(value)}
-        
-        
+        placeholder="Name"
+        onChangeText={(value) => setbowler(value)}
+
+
       />
-      <TouchableOpacity style={styles.button} onPress = { () => {
-        //sending retired player data into fitst inning screen
-         navigation.navigate({                
-          name: 'FirstInningsScreen',
-          params: { retired: choice,replaced:name},
-          merge: true,
-      });
+      <TouchableOpacity style={styles.button} onPress={() => {
+        if (!bowler) {
+          alert("Please type Bowler name")
+        }
+        else {
+          //sending retired player data into fitst inning screen
+          navigation.navigate({
+            name: 'FirstInningsScreen',
+            params: { bowler: bowler },
+            merge: true,
+          });
+        }
       }}>
         <Text style={styles.buttonText} >Done</Text>
       </TouchableOpacity>

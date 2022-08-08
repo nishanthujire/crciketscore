@@ -7,7 +7,7 @@ import { RadioButton } from 'react-native-paper';
 
 
 
-export default PlayerRetired = ({ route, navigation }) => {
+export default PlayerRetired2 = ({ route, navigation }) => {
   const [name, setName] = useState(null);
   const[choice, setChoice] = useState("a");
   var val;
@@ -50,7 +50,7 @@ export default PlayerRetired = ({ route, navigation }) => {
       <TouchableOpacity style={styles.button} onPress = { () => {
         //sending retired player data into fitst inning screen
          navigation.navigate({                
-          name: 'FirstInningsScreen',
+          name: 'SecondInnings',
           params: { retired: choice,replaced:name},
           merge: true,
       });
